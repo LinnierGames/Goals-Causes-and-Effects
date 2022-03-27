@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="true" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E230" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Category" representedClassName="CategoryData" syncable="YES" codeGenerationType="class">
+        <attribute name="title" attributeType="String" defaultValueString="Untitled"/>
+        <relationship name="nodes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Node" inverseName="category" inverseEntity="Node"/>
+    </entity>
+    <entity name="Effection" representedClassName="EffectionData" syncable="YES" codeGenerationType="class">
+        <attribute name="effect" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="cause" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Node" inverseName="effects" inverseEntity="Node"/>
+        <relationship name="effected" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Node" inverseName="causes" inverseEntity="Node"/>
+    </entity>
+    <entity name="Node" representedClassName="NodeData" syncable="YES" codeGenerationType="class">
+        <attribute name="impact" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="initialValue" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="shape" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString="Untitled"/>
+        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="nodes" inverseEntity="Category"/>
+        <relationship name="causes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Effection" inverseName="effected" inverseEntity="Effection"/>
+        <relationship name="effects" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Effection" inverseName="cause" inverseEntity="Effection"/>
+    </entity>
+    <elements>
+        <element name="Node" positionX="148.6640625" positionY="-208.90234375" width="128" height="148"/>
+        <element name="Category" positionX="-62.734375" positionY="-70.484375" width="128" height="73"/>
+        <element name="Effection" positionX="-69.053466796875" positionY="-172.9245300292969" width="128" height="88"/>
+    </elements>
 </model>

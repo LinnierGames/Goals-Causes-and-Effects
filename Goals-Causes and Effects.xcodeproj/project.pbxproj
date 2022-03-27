@@ -17,6 +17,10 @@
 		E1BE8DD827F032C8009A0C6D /* Goals_Causes_and_EffectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8DD727F032C8009A0C6D /* Goals_Causes_and_EffectsTests.swift */; };
 		E1BE8DE227F032C8009A0C6D /* Goals_Causes_and_EffectsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8DE127F032C8009A0C6D /* Goals_Causes_and_EffectsUITests.swift */; };
 		E1BE8DE427F032C8009A0C6D /* Goals_Causes_and_EffectsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8DE327F032C8009A0C6D /* Goals_Causes_and_EffectsUITestsLaunchTests.swift */; };
+		E1BE8E0227F04858009A0C6D /* CanvasScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8E0127F04858009A0C6D /* CanvasScreen.swift */; };
+		E1BE8E0427F0486F009A0C6D /* NodesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8E0327F0486F009A0C6D /* NodesScreen.swift */; };
+		E1BE8E0627F0487F009A0C6D /* PresistenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8E0527F0487F009A0C6D /* PresistenceStore.swift */; };
+		E1BE8E0827F04894009A0C6D /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8E0727F04894009A0C6D /* CoreData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +55,11 @@
 		E1BE8DDD27F032C8009A0C6D /* Goals-Causes and EffectsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Goals-Causes and EffectsUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1BE8DE127F032C8009A0C6D /* Goals_Causes_and_EffectsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goals_Causes_and_EffectsUITests.swift; sourceTree = "<group>"; };
 		E1BE8DE327F032C8009A0C6D /* Goals_Causes_and_EffectsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goals_Causes_and_EffectsUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E1BE8DF027F032D8009A0C6D /* Goals-Causes and Effects.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Goals-Causes and Effects.entitlements"; sourceTree = "<group>"; };
+		E1BE8E0127F04858009A0C6D /* CanvasScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasScreen.swift; sourceTree = "<group>"; };
+		E1BE8E0327F0486F009A0C6D /* NodesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesScreen.swift; sourceTree = "<group>"; };
+		E1BE8E0527F0487F009A0C6D /* PresistenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresistenceStore.swift; sourceTree = "<group>"; };
+		E1BE8E0727F04894009A0C6D /* CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,10 +113,15 @@
 				E1BE8DBD27F032C5009A0C6D /* AppDelegate.swift */,
 				E1BE8DBF27F032C5009A0C6D /* SceneDelegate.swift */,
 				E1BE8DC127F032C5009A0C6D /* ViewController.swift */,
+				E1BE8E0327F0486F009A0C6D /* NodesScreen.swift */,
+				E1BE8E0127F04858009A0C6D /* CanvasScreen.swift */,
+				E1BE8E0527F0487F009A0C6D /* PresistenceStore.swift */,
 				E1BE8DC327F032C5009A0C6D /* Main.storyboard */,
 				E1BE8DC927F032C7009A0C6D /* Assets.xcassets */,
 				E1BE8DCB27F032C7009A0C6D /* LaunchScreen.storyboard */,
 				E1BE8DCE27F032C8009A0C6D /* Info.plist */,
+				E1BE8E0727F04894009A0C6D /* CoreData.swift */,
+				E1BE8DF027F032D8009A0C6D /* Goals-Causes and Effects.entitlements */,
 				E1BE8DC627F032C5009A0C6D /* Goals_Causes_and_Effects.xcdatamodeld */,
 			);
 			path = "Goals-Causes and Effects";
@@ -264,6 +278,10 @@
 				E1BE8DC227F032C5009A0C6D /* ViewController.swift in Sources */,
 				E1BE8DBE27F032C5009A0C6D /* AppDelegate.swift in Sources */,
 				E1BE8DC027F032C5009A0C6D /* SceneDelegate.swift in Sources */,
+				E1BE8E0627F0487F009A0C6D /* PresistenceStore.swift in Sources */,
+				E1BE8E0827F04894009A0C6D /* CoreData.swift in Sources */,
+				E1BE8E0427F0486F009A0C6D /* NodesScreen.swift in Sources */,
+				E1BE8E0227F04858009A0C6D /* CanvasScreen.swift in Sources */,
 				E1BE8DC827F032C5009A0C6D /* Goals_Causes_and_Effects.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -439,14 +457,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Goals-Causes and Effects/Goals-Causes and Effects.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8U3L6K9JA6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Goals-Causes and Effects/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Causes and Effects";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -456,9 +476,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.linniergames.Goals-Causes-and-Effects";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -467,14 +488,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Goals-Causes and Effects/Goals-Causes and Effects.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8U3L6K9JA6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Goals-Causes and Effects/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Causes and Effects";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -484,9 +507,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.linniergames.Goals-Causes-and-Effects";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};
