@@ -48,5 +48,22 @@ struct NodesScreen: View {
         .padding(.leading)
       }
     }
+    .if(UIDevice.current.userInterfaceIdiom == .phone) { view in
+      view
+        .toolbar {
+          NavigationLink(destination: { CanvasScreen() }, label: { Text("Picture") })
+        }
+    }
+  }
+}
+
+extension View {
+  @ViewBuilder
+  func `if`<T>(_ condition: Bool, transform: (Self) -> T) -> some View where T: View {
+    if condition {
+      transform(self)
+    } else {
+      self
+    }
   }
 }
