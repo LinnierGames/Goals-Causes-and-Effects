@@ -8,17 +8,17 @@
 import Foundation
 
 extension NodeData {
-  var listOfCauses: Set<EffectionData> {
-    Set(self.causes?.allObjects as? [EffectionData] ?? [])
+  var listOfCauses: [EffectionData] {
+    self.causes?.allObjects as? [EffectionData] ?? []
   }
-  var listOfCauses2: Set<NodeData> {
-    Set(listOfCauses.map { $0.cause! })
+  var listOfCauses2: [NodeData] {
+    listOfCauses.map { $0.cause! }
   }
 
-  var listOfEffects: Set<EffectionData> {
-    Set(self.effects?.allObjects as? [EffectionData] ?? [])
+  var listOfEffects: [EffectionData] {
+    self.effects?.allObjects as? [EffectionData] ?? []
   }
-  var listOfEffects2: Set<NodeData> {
-    Set(listOfEffects.map { $0.effected! })
+  var listOfEffects2: [NodeData] {
+    listOfEffects.map { $0.effected! }
   }
 }

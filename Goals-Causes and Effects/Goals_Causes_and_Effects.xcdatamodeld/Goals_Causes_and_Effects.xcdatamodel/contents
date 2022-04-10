@@ -19,8 +19,8 @@
         <relationship name="effects" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Effection" inverseName="cause" inverseEntity="Effection"/>
     </entity>
     <elements>
-        <element name="Node" positionX="148.6640625" positionY="-208.90234375" width="128" height="148"/>
         <element name="Category" positionX="-62.734375" positionY="-70.484375" width="128" height="73"/>
         <element name="Effection" positionX="-69.053466796875" positionY="-172.9245300292969" width="128" height="88"/>
+        <element name="Node" positionX="148.6640625" positionY="-208.90234375" width="128" height="134"/>
     </elements>
 </model>

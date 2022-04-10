@@ -44,6 +44,14 @@ class PresistenceStoreImpl {
   private init() {
   }
 
+  func newNode(title: String, isGood: Bool, initialValue: Double) {
+    let node = NodeData(context: container.viewContext)
+    node.title = title
+    node.impact = isGood ? 1 : 0
+    node.initialValue = Int64(initialValue)
+
+    saveContext()
+  }
 
   func saveContext () {
     let context = container.viewContext
