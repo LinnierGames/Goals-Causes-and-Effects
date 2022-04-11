@@ -11,51 +11,65 @@ struct NodesScreen: View {
   @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \NodeData.title, ascending: true)])
   var nodes: FetchedResults<NodeData>
 
+  @State var selection: String?
+
+  var items = ["A", "B"]
+
   var body: some View {
-    Text("HI")
-    List(nodes, id: \.title) { node in
-      NavigationLink {
-        NodeDetailScreen(node: node)
-      } label: {
-        VStack(alignment: .leading) {
-          Text(node.title!)
+    VStack {
+      Text("HI")
+      List(nodes, id: \.title) { node in
+        NavigationLink {
+          NodeDetailScreen(node: node)
+        } label: {
+          VStack(alignment: .leading) {
+            Text(node.title!)
 
-          Text("Causes")
-            .font(.caption)
-          Group {
-            if node.listOfCauses2.isEmpty {
-              Text("<empty>")
-                .font(.caption)
-            } else {
-              ForEach(Array(node.listOfCauses2), id: \.title) { cause in
-                Text(cause.title!)
+            Text("Causes")
+              .font(.caption)
+            Group {
+              if node.listOfCauses2.isEmpty {
+                Text("<empty>")
                   .font(.caption)
+              } else {
+                ForEach(Array(node.listOfCauses2), id: \.title) { cause in
+                  Text(cause.title!)
+                    .font(.caption)
+                }
               }
             }
-          }
-          .padding(.leading)
+            .padding(.leading)
 
-          Text("Effects")
-            .font(.caption)
-          Group {
-            if node.listOfEffects2.isEmpty {
-              Text("<empty>")
-                .font(.caption)
-            } else {
-              ForEach(Array(node.listOfEffects2), id: \.title) { effect in
-                Text(effect.title!)
+            Text("Effects")
+              .font(.caption)
+            Group {
+              if node.listOfEffects2.isEmpty {
+                Text("<empty>")
                   .font(.caption)
+              } else {
+                ForEach(Array(node.listOfEffects2), id: \.title) { effect in
+                  Text(effect.title!)
+                    .font(.caption)
+                }
               }
             }
+            .padding(.leading)
           }
-          .padding(.leading)
         }
       }
     }
+
     .if(UIDevice.current.userInterfaceIdiom == .phone) { view in
       view
         .toolbar {
-          NavigationLink(destination: { CanvasScreen() }, label: { Text("Picture") })
+          ToolbarItemGroup(placement: .navigationBarTrailing) {
+            NavigationLink {
+              AddNodeScreen()
+            } label: {
+              Image(systemName: "plus")
+            }
+            NavigationLink(destination: { CanvasScreen() }, label: { Text("Picture") })
+          }
         }
     }
   }
@@ -87,6 +101,7 @@ struct NodeDetailScreen: View {
   }
   @State private var segmentedControl = SegmentedControl.causes
   @State private var isShowingAddNode = false
+  @State private var presentEffection: EffectionData?
 
   var body: some View {
     VStack {
@@ -134,11 +149,17 @@ struct NodeDetailScreen: View {
                     .foregroundColor(.green)
                 }
 
-                VStack {
-                  Image(systemName: "arrow.right.square")
-                  Text(String(effect: Int(cause.effect)))
+                Button {
+                } label: {
+                  VStack {
+                    Image(systemName: "arrow.right.square")
+                    Text(String(effect: Int(cause.effect)))
+                  }
+                  .foregroundColor(cause.effect >= 0 ? .green : .red)
                 }
-                .foregroundColor(cause.effect >= 0 ? .green : .red)
+                .onTapGesture {
+                  presentEffection = cause
+                }
               }
             }
           }
@@ -150,11 +171,17 @@ struct NodeDetailScreen: View {
               NodeDetailScreen(node: node, breadCrumbsOfNodes: breadCrumbsOfNodes + [self.node])
             } label: {
               HStack {
-                VStack {
-                  Image(systemName: "arrow.right.square")
-                  Text(String(effect: Int(effect.effect)))
+                Button {
+                } label: {
+                  VStack {
+                    Image(systemName: "arrow.right.square")
+                    Text(String(effect: Int(effect.effect)))
+                  }
+                  .foregroundColor(effect.effect >= 0 ? .green : .red)
                 }
-                .foregroundColor(effect.effect >= 0 ? .green : .red)
+                .onTapGesture {
+                  presentEffection = effect
+                }
 
                 VStack {
                   Text(node.title!)
@@ -174,7 +201,32 @@ struct NodeDetailScreen: View {
     .navigationTitle(node.title!)
 
     .sheet(isPresented: $isShowingAddNode) {
-      NodeSearchScreen(destination: segmentedControl == .causes ? .cause : .effect)
+      NodeSearchScreen(
+        destination: segmentedControl == .causes ? .cause : .effect,
+        didSelectNode: { node in
+          isShowingAddNode = false
+
+          let store = injectPresistenceStore()
+          let effection = EffectionData(context: store.container.viewContext)
+          effection.effect = 1
+
+          switch segmentedControl {
+          case .causes:
+            self.node.addToCauses(effection)
+            node.addToEffects(effection)
+          case .effects:
+            self.node.addToEffects(effection)
+            node.addToCauses(effection)
+          case .initiatives:
+            break
+          }
+
+          store.saveContext()
+        }
+      )
+    }
+    .sheet(item: $presentEffection) { effection in
+      EffectionDetailScreen(effection: effection)
     }
   }
 
@@ -183,11 +235,45 @@ struct NodeDetailScreen: View {
   }
 }
 
+struct EffectionDetailScreen: View {
+  var effection: EffectionData
+
+  @Environment(\.dismiss) private var dismiss
+
+  var body: some View {
+    NavigationView {
+      VStack {
+        Text(effection.cause!.title!)
+        Circle()
+          .foregroundColor(.green)
+          .frame(width: 232, height: 232)
+        Spacer()
+        Text(String(effection.effect))
+        Spacer()
+        Circle()
+          .foregroundColor(.green)
+          .frame(width: 232, height: 232)
+        Text(effection.effected!.title!)
+      }
+      .padding()
+
+      .toolbar {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button(action: dismiss.callAsFunction) {
+            Image(systemName: "checkmark")
+          }
+        }
+      }
+    }
+  }
+}
+
 struct NodeSearchScreen: View {
   enum Destination {
     case cause, effect
   }
   var destination: Destination
+  var didSelectNode: (NodeData) -> Void
 
   @State private var search = ""
 
@@ -200,16 +286,19 @@ struct NodeSearchScreen: View {
     NavigationView {
       VStack {
         TextField("Search Nodes", text: $search)
-        if let node = selection { // TODO: this doesn't get updated
-          Text(node.title!)
-        }
-        List(nodes, selection: $selection) { node in
+          .padding()
+
+        List(nodes) { node in
           HStack {
             Circle()
               .foregroundColor(.green)
               .frame(width: 32, height: 32)
 
             Text(node.title!)
+          }
+          .contentShape(Rectangle())
+          .onTapGesture {
+            selection = node
           }
         }
       }
@@ -226,7 +315,8 @@ struct NodeSearchScreen: View {
       .navigationBarTitleDisplayMode(.inline)
 
       .onChange(of: selection) { newValue in
-        print("Selected!", newValue)
+        guard let node = newValue else { return }
+        didSelectNode(node)
       }
     }
   }
@@ -252,6 +342,7 @@ struct AddNodeScreen: View {
       HStack {
         Text("Title")
         TextField("title", text: $title)
+          .multilineTextAlignment(.trailing)
       }
 
       HStack {
@@ -278,9 +369,17 @@ struct AddNodeScreen: View {
     }
     .padding()
 
+    .navigationBarBackButtonHidden(true)
     .toolbar {
-      Button(action: pressSave) {
-        Image(systemName: "checkmark")
+      ToolbarItem(placement: .navigationBarLeading) {
+        Button(action: dismiss.callAsFunction) {
+          Image(systemName: "xmark")
+        }
+      }
+      ToolbarItem(placement: .navigationBarTrailing) {
+        Button(action: pressSave) {
+          Image(systemName: "checkmark")
+        }
       }
     }
   }
