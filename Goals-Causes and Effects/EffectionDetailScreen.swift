@@ -39,7 +39,9 @@ struct EffectionDetailScreen: View {
           }
           Spacer()
 
-          Text(String(effection.effect))
+          Image(systemName: "arrow.down")
+            .arrowThickness(effection: effection)
+            .foregroundColor(effection.effect >= 0 ? .green : .red)
 
           Spacer()
           VStack {
@@ -90,5 +92,35 @@ extension Double {
     } else {
       return -abs(self)
     }
+  }
+}
+
+extension View {
+  func arrowThickness(effection: EffectionData) -> some View {
+    let size: CGFloat
+    let weight: Font.Weight
+
+    switch effection.effect {
+    case ...0.25:
+      size = 32
+      weight = .ultraLight
+    case 0.25...0.5:
+      size = 32
+      weight = .light
+    case 0.5...1:
+      size = 64
+      weight = .regular
+    case 1...2:
+      size = 64
+      weight = .semibold
+    case 2...4:
+      size = 96
+      weight = .heavy
+    default:
+      size = 32
+      weight = .regular
+    }
+
+    return font(.system(size: size, weight: weight))
   }
 }

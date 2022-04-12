@@ -181,13 +181,13 @@ class CanvasViewController: UIViewController {
 
 //    view.backgroundColor = .blue
 
-    let path1 = UIBezierPath()
-    path1.move(to: CGPoint(x: 0, y: 200))
-    path1.addLine(to: CGPoint(x: view.frame.midX, y: 400))
-    path1.addLine(to: CGPoint(x: view.frame.maxX, y: 200))
-    path1.addLine(to: CGPoint(x: view.frame.midX, y: -300))
-    let pathView = Draw(path: path1)
-    pathView.frame = view.bounds
+//    let path1 = UIBezierPath()
+//    path1.move(to: CGPoint(x: 0, y: 200))
+//    path1.addLine(to: CGPoint(x: view.frame.midX, y: 400))
+//    path1.addLine(to: CGPoint(x: view.frame.maxX, y: 200))
+//    path1.addLine(to: CGPoint(x: view.frame.midX, y: -300))
+//    let pathView = Draw(path: path1)
+//    pathView.frame = view.bounds
 //    view.addSubview(pathView)
 
     drawEffectionsView.frame = view.bounds
@@ -222,14 +222,14 @@ class CanvasViewController: UIViewController {
     tableOfNodeViews.removeAll()
     makeNextNode()
 
-    let path1 = UIBezierPath()
-    path1.move(to: CGPoint(x: 0, y: 200))
-    path1.addLine(to: CGPoint(x: view.frame.midX, y: 400))
-    path1.addLine(to: CGPoint(x: view.frame.maxX, y: 200))
-    path1.addLine(to: CGPoint(x: view.frame.midX, y: -300))
+//    let path1 = UIBezierPath()
+//    path1.move(to: CGPoint(x: 0, y: 200))
+//    path1.addLine(to: CGPoint(x: view.frame.midX, y: 400))
+//    path1.addLine(to: CGPoint(x: view.frame.maxX, y: 200))
+//    path1.addLine(to: CGPoint(x: view.frame.midX, y: -300))
 
 //    if UIDevice.current.userInterfaceIdiom == .pad {
-      collision.addBoundary(withIdentifier: "Cat 1" as NSCopying, for: path1)
+//      collision.addBoundary(withIdentifier: "Cat 1" as NSCopying, for: path1)
 //    }
 
     animator.addBehavior(gravity)

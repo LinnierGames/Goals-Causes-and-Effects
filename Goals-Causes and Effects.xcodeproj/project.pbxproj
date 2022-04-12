@@ -527,7 +527,7 @@
 				DEVELOPMENT_TEAM = 8U3L6K9JA6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Goals-Causes and Effects/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Causes and Effects";
+				INFOPLIST_KEY_CFBundleDisplayName = "C n E";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -559,7 +559,7 @@
 				DEVELOPMENT_TEAM = 8U3L6K9JA6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Goals-Causes and Effects/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Causes and Effects";
+				INFOPLIST_KEY_CFBundleDisplayName = "C n E";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
