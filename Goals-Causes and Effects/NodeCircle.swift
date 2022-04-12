@@ -13,6 +13,5 @@ struct NodeCircle: View {
   var body: some View {
     Circle()
       .foregroundColor(Color(uiColor: node.color))
-      .border(Color.gray.opacity(0.15))
   }
 }

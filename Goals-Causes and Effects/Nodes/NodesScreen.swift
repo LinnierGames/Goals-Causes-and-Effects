@@ -18,7 +18,11 @@ struct NodesScreen: View {
           NodeDetailScreen(node: node)
         } label: {
           VStack(alignment: .leading) {
-            Text(node.title)
+            HStack {
+              NodeCircle(node: node)
+                .frame(width: 32, height: 32)
+              Text(node.title)
+            }
 
             Text("Causes")
               .font(.caption)

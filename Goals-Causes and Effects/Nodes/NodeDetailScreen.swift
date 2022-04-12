@@ -137,7 +137,7 @@ struct CauseRow<Destination: View>: View {
         VStack {
           Text(node.title)
           Rectangle()
-            .foregroundColor(.green)
+            .foregroundColor(Color(uiColor: node.color))
         }
 
         Button {
@@ -181,7 +181,7 @@ struct EffectRow<Destination: View>: View {
         VStack {
           Text(node.title)
           Rectangle()
-            .foregroundColor(.green)
+            .foregroundColor(Color(uiColor: node.color))
         }
       }
     }
