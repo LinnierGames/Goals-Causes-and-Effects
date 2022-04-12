@@ -16,6 +16,7 @@ struct NodeDetailScreen: View {
   }
   @State private var segmentedControl = SegmentedControl.causes
   @State private var isShowingAddNode = false
+  @State private var isShowingEdit = false
   @State private var presentEffection: EffectionData?
 
   var body: some View {
@@ -77,7 +78,17 @@ struct NodeDetailScreen: View {
     .padding(.horizontal)
 
     .navigationTitle(node.title)
+    .toolbar {
+      Button("Edit") {
+        isShowingEdit = true
+      }
+    }
 
+    .sheet(isPresented: $isShowingEdit) {
+      NavigationView {
+        AddNodeScreen(editNode: node)
+      }
+    }
     .sheet(isPresented: $isShowingAddNode) {
       NodeSearchScreen(
         destination: segmentedControl == .causes ? .cause : .effect,

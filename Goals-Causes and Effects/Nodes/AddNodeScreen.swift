@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AddNodeScreen: View {
+  var node: NodeData?
+
   @State private var title = ""
 
   private enum Impact: Int, Identifiable {
@@ -17,6 +19,17 @@ struct AddNodeScreen: View {
   @State private var initalValue: Double = 0.5
 
   @Environment(\.dismiss) var dismiss
+
+  init() {
+    self.node = nil
+  }
+
+  init(editNode: NodeData) {
+    self.node = editNode
+    self._title = State(initialValue: editNode.title)
+    self._impact = State(initialValue: editNode.color == .green ? .good : .bad)
+    self._initalValue = State(initialValue: editNode.initialValue)
+  }
 
   var body: some View {
     VStack {
@@ -67,7 +80,16 @@ struct AddNodeScreen: View {
 
   private func pressSave() {
     let store = injectPresistenceStore()
-    store.newNode(title: title, isGood: impact == .good, initialValue: initalValue)
+
+    if let node = node {
+      node.title = title
+      node.color = impact == .good ? .green : .red
+      node.initialValue = initalValue
+      store.saveContext()
+    } else {
+      store.newNode(title: title, isGood: impact == .good, initialValue: initalValue)
+    }
+
     dismiss()
   }
 }
