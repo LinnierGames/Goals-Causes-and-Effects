@@ -28,7 +28,11 @@ struct NodeDetailScreen: View {
 
       NodeCircle(node: node)
         .frame(height: 232)
-        .padding(.vertical, 16)
+
+      Image(systemName: "arrow.up")
+        .font(.system(size: 96, weight: .bold))
+        .rotationEffect(.degrees(segmentedControl == .causes ? 0 : 180))
+        .animation(.spring(response: 0.2, dampingFraction: 0.3, blendDuration: 1), value: segmentedControl)
 
       HStack {
         Picker(selection: $segmentedControl) {
@@ -143,7 +147,8 @@ struct CauseRow<Destination: View>: View {
         Button {
         } label: {
           VStack {
-            Image(systemName: "arrow.right.square")
+            Image(systemName: "arrow.right")
+//              .arrowThickness(effection: cause)
             Text(String(effect: Int(cause.effect)))
           }
           .foregroundColor(cause.effect >= 0 ? .green : .red)
@@ -169,7 +174,8 @@ struct EffectRow<Destination: View>: View {
         Button {
         } label: {
           VStack {
-            Image(systemName: "arrow.right.square")
+            Image(systemName: "arrow.right")
+//              .arrowThickness(effection: effect)
             Text(String(effect: Int(effect.effect)))
           }
           .foregroundColor(effect.effect >= 0 ? .green : .red)

@@ -100,7 +100,7 @@ extension View {
     let size: CGFloat
     let weight: Font.Weight
 
-    switch effection.effect {
+    switch abs(effection.effect) {
     case ...0.25:
       size = 32
       weight = .ultraLight
