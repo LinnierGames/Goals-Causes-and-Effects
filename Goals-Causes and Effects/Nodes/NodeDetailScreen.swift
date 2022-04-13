@@ -18,6 +18,7 @@ struct NodeDetailScreen: View {
   @State private var isShowingAddNode = false
   @State private var isShowingEdit = false
   @State private var presentEffection: EffectionData?
+  @State private var updater = false
 
   var body: some View {
     VStack {
@@ -134,28 +135,47 @@ struct CauseRow<Destination: View>: View {
   var didTapEffection: (EffectionData) -> Void
 
   var body: some View {
-    let node = cause.cause!
+    if cause.isDeleted {
+      EmptyView()
+    } else {
+      let node = cause.cause!
+      NavigationLink(destination: destination) {
+        HStack {
+          VStack {
+            Text(node.title)
+            Rectangle()
+              .foregroundColor(Color(uiColor: node.color))
+          }
 
-    NavigationLink(destination: destination) {
-      HStack {
-        VStack {
-          Text(node.title)
-          Rectangle()
-            .foregroundColor(Color(uiColor: node.color))
+          Button {
+          } label: {
+            VStack {
+              Image(systemName: "arrow.right")
+  //              .arrowThickness(effection: cause)
+              Text(String(effect: Int(cause.effect)))
+            }
+            .foregroundColor(cause.effect >= 0 ? .green : .red)
+          }
+          .onTapGesture {
+            didTapEffection(cause)
+          }
         }
+      }.swipeActions {
+        Button {
+          let store = injectPresistenceStore()
+          store.container.viewContext.delete(node)
+          store.saveContext()
+        } label: {
+          Image(systemName: "trash")
+        }.tint(.red)
 
         Button {
+          let store = injectPresistenceStore()
+          store.container.viewContext.delete(cause)
+          store.saveContext()
         } label: {
-          VStack {
-            Image(systemName: "arrow.right")
-//              .arrowThickness(effection: cause)
-            Text(String(effect: Int(cause.effect)))
-          }
-          .foregroundColor(cause.effect >= 0 ? .green : .red)
-        }
-        .onTapGesture {
-          didTapEffection(cause)
-        }
+          Image(systemName: "circle.slash")
+        }.tint(.yellow)
       }
     }
   }
@@ -167,28 +187,47 @@ struct EffectRow<Destination: View>: View {
   var didTapEffection: (EffectionData) -> Void
 
   var body: some View {
-    let node = effect.effected!
-
-    NavigationLink(destination: destination) {
-      HStack {
-        Button {
-        } label: {
-          VStack {
-            Image(systemName: "arrow.right")
-//              .arrowThickness(effection: effect)
-            Text(String(effect: Int(effect.effect)))
+    if effect.isDeleted {
+      EmptyView()
+    } else {
+      let node = effect.effected!
+      NavigationLink(destination: destination) {
+        HStack {
+          Button {
+          } label: {
+            VStack {
+              Image(systemName: "arrow.right")
+  //              .arrowThickness(effection: effect)
+              Text(String(effect: Int(effect.effect)))
+            }
+            .foregroundColor(effect.effect >= 0 ? .green : .red)
           }
-          .foregroundColor(effect.effect >= 0 ? .green : .red)
-        }
-        .onTapGesture {
-          didTapEffection(effect)
-        }
+          .onTapGesture {
+            didTapEffection(effect)
+          }
 
-        VStack {
-          Text(node.title)
-          Rectangle()
-            .foregroundColor(Color(uiColor: node.color))
+          VStack {
+            Text(node.title)
+            Rectangle()
+              .foregroundColor(Color(uiColor: node.color))
+          }
         }
+      }.swipeActions {
+        Button {
+          let store = injectPresistenceStore()
+          store.container.viewContext.delete(node)
+          store.saveContext()
+        } label: {
+          Image(systemName: "trash")
+        }.tint(.red)
+
+        Button {
+          let store = injectPresistenceStore()
+          store.container.viewContext.delete(effect)
+          store.saveContext()
+        } label: {
+          Image(systemName: "circle.slash")
+        }.tint(.yellow)
       }
     }
   }

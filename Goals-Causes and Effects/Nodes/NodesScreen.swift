@@ -13,47 +13,53 @@ struct NodesScreen: View {
 
   var body: some View {
     VStack {
-      List(nodes, id: \.title) { node in
-        NavigationLink {
-          NodeDetailScreen(node: node)
-        } label: {
-          VStack(alignment: .leading) {
-            HStack {
-              NodeCircle(node: node)
-                .frame(width: 32, height: 32)
-              Text(node.title)
-            }
+      List {
+        ForEach(nodes, id: \.title) { node in
+          NavigationLink {
+            NodeDetailScreen(node: node)
+          } label: {
+            VStack(alignment: .leading) {
+              HStack {
+                NodeCircle(node: node)
+                  .frame(width: 32, height: 32)
+                Text(node.title)
+              }
 
-            Text("Causes")
-              .font(.caption)
-            Group {
-              if node.listOfCauses2.isEmpty {
-                Text("<empty>")
-                  .font(.caption)
-              } else {
-                ForEach(Array(node.listOfCauses2), id: \.title) { cause in
-                  Text(cause.title)
+              Text("Causes")
+                .font(.caption)
+              Group {
+                if node.listOfCauses2.isEmpty {
+                  Text("<empty>")
                     .font(.caption)
+                } else {
+                  ForEach(Array(node.listOfCauses2), id: \.title) { cause in
+                    Text(cause.title)
+                      .font(.caption)
+                  }
                 }
               }
-            }
-            .padding(.leading)
+              .padding(.leading)
 
-            Text("Effects")
-              .font(.caption)
-            Group {
-              if node.listOfEffects2.isEmpty {
-                Text("<empty>")
-                  .font(.caption)
-              } else {
-                ForEach(Array(node.listOfEffects2), id: \.title) { effect in
-                  Text(effect.title)
+              Text("Effects")
+                .font(.caption)
+              Group {
+                if node.listOfEffects2.isEmpty {
+                  Text("<empty>")
                     .font(.caption)
+                } else {
+                  ForEach(Array(node.listOfEffects2), id: \.title) { effect in
+                    Text(effect.title)
+                      .font(.caption)
+                  }
                 }
               }
+              .padding(.leading)
             }
-            .padding(.leading)
           }
+        }.onDelete { offsets in
+          let store = injectPresistenceStore()
+          offsets.map { nodes[$0] }.forEach(store.container.viewContext.delete)
+          store.saveContext()
         }
       }
     }
