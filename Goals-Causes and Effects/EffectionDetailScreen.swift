@@ -24,18 +24,33 @@ struct EffectionDetailScreen: View {
             Button("1/4x") {
               effection.effect = 0.25
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
             Button("1/2x") {
               effection.effect = 0.5
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
             Button("1x") {
               effection.effect = 1
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
             Button("2x") {
               effection.effect = 2
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
             Button("4x") {
               effection.effect = 4.sameSign(as: effection.effect)
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
           }
           Spacer()
 
@@ -54,14 +69,23 @@ struct EffectionDetailScreen: View {
             } label: {
               Image(systemName: "arrow.up.arrow.down")
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
             Button("+") {
               guard effection.effect < 0 else { return }
               effection.effect *= -1
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
             Button("-") {
               guard effection.effect >= 0 else { return }
               effection.effect *= -1
             }
+            .padding(4)
+            .background(Color.gray.opacity(0.15))
+            .cornerRadius(4)
           }
         }
         Spacer()
@@ -71,6 +95,7 @@ struct EffectionDetailScreen: View {
       }
       .padding()
 
+      .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
           Button {

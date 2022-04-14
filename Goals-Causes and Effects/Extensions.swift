@@ -66,7 +66,7 @@ extension Identifiable where Self: RawRepresentable, RawValue == Int {
 }
 
 extension String {
-  init(effect: Int) {
+  init(effect: Double) {
     self = String(effect) + "x"
   }
 }

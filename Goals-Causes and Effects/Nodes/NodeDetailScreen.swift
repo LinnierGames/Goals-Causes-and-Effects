@@ -152,7 +152,7 @@ struct CauseRow<Destination: View>: View {
             VStack {
               Image(systemName: "arrow.right")
   //              .arrowThickness(effection: cause)
-              Text(String(effect: Int(cause.effect)))
+              Text(String(effect: cause.effect))
             }
             .foregroundColor(cause.effect >= 0 ? .green : .red)
           }
@@ -198,7 +198,7 @@ struct EffectRow<Destination: View>: View {
             VStack {
               Image(systemName: "arrow.right")
   //              .arrowThickness(effection: effect)
-              Text(String(effect: Int(effect.effect)))
+              Text(String(effect: effect.effect))
             }
             .foregroundColor(effect.effect >= 0 ? .green : .red)
           }
