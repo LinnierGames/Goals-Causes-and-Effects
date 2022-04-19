@@ -17,6 +17,7 @@ struct NodeDetailScreen: View {
   @State private var segmentedControl = SegmentedControl.causes
   @State private var isShowingAddNode = false
   @State private var isShowingEdit = false
+  @State private var isShowingCreateNode = false
   @State private var presentEffection: EffectionData?
   @State private var updater = false
 
@@ -48,7 +49,18 @@ struct NodeDetailScreen: View {
         }
         .pickerStyle(SegmentedPickerStyle())
 
-        Button(action: pressAdd) {
+        Menu {
+          Button {
+            isShowingAddNode = true
+          } label: {
+            Label("Add Node", systemImage: "plus")
+          }
+          Button {
+            isShowingCreateNode = true
+          } label: {
+            Label("Create a New Node", systemImage: "plus")
+          }
+        } label: {
           Image(systemName: "plus")
         }
       }
@@ -122,10 +134,34 @@ struct NodeDetailScreen: View {
     .sheet(item: $presentEffection) { effection in
       EffectionDetailScreen(effection: effection)
     }
-  }
+    .sheet(isPresented: $isShowingCreateNode) {
+      switch segmentedControl {
+      case .causes:
+        NavigationView {
+          AddNodeScreen { node in
+            let store = injectPresistenceStore()
+            let effection = EffectionData(context: store.container.viewContext)
+            effection.effect = 1
 
-  private func pressAdd() {
-    isShowingAddNode = true
+            self.node.addToCauses(effection)
+            node.addToEffects(effection)
+          }
+        }
+      case .effects:
+        NavigationView {
+          AddNodeScreen { node in
+            let store = injectPresistenceStore()
+            let effection = EffectionData(context: store.container.viewContext)
+            effection.effect = 1
+
+            self.node.addToEffects(effection)
+            node.addToCauses(effection)
+          }
+        }
+      case .initiatives:
+        EmptyView()
+      }
+    }
   }
 }
 

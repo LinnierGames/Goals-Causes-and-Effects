@@ -164,11 +164,10 @@ struct Arrow {
   let width: CGFloat
 }
 
-private let sizeOfNodes: CGFloat = 164
+private let sizeOfNodes: CGFloat = 96
 
 class CanvasViewController: UIViewController {
   private let drawEffectionsView = DrawEffections()
-
 
   private let persistenceController = injectPresistenceStore()
 

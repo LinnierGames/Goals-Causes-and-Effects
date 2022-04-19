@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AddNodeScreen: View {
   var node: NodeData?
+  var didCreateNode: (NodeData) -> Void
 
   @State private var title = ""
 
@@ -20,12 +21,14 @@ struct AddNodeScreen: View {
 
   @Environment(\.dismiss) var dismiss
 
-  init() {
+  init(didCreateNode: @escaping (NodeData) -> Void = { _ in }) {
     self.node = nil
+    self.didCreateNode = didCreateNode
   }
 
   init(editNode: NodeData) {
     self.node = editNode
+    self.didCreateNode = { _ in }
     self._title = State(initialValue: editNode.title)
     self._impact = State(initialValue: editNode.color == .green ? .good : .bad)
     self._initalValue = State(initialValue: editNode.initialValue)
@@ -64,6 +67,7 @@ struct AddNodeScreen: View {
     .padding()
 
     .navigationBarBackButtonHidden(true)
+    .navigationBarTitleDisplayMode(.inline)
     .toolbar {
       ToolbarItem(placement: .navigationBarLeading) {
         Button(action: dismiss.callAsFunction) {
@@ -87,7 +91,8 @@ struct AddNodeScreen: View {
       node.initialValue = initalValue
       store.saveContext()
     } else {
-      store.newNode(title: title, isGood: impact == .good, initialValue: initalValue)
+      let node = store.newNode(title: title, isGood: impact == .good, initialValue: initalValue)
+      didCreateNode(node)
     }
 
     dismiss()
