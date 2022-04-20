@@ -17,7 +17,16 @@ struct CategoriesScreen: View {
     NavigationView {
       List {
         ForEach(categories, id: \.title) { category in
-          Text(category.title)
+          HStack {
+            Text(category.title)
+            Spacer()
+            Text("Nodes: \(category.nodes.count)")
+              .foregroundColor(.secondary)
+          }
+        }.onDelete { offsets in
+          let store = injectPresistenceStore()
+          offsets.map { categories[$0] }.forEach(store.container.viewContext.delete)
+          store.saveContext()
         }
       }
       .alert(
