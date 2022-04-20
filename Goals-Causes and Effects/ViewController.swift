@@ -23,10 +23,22 @@ struct ContentView: View {
   private let persistenceController = injectPresistenceStore()
 
   var body: some View {
-    NavigationView {
-      NodesScreen()
-      CanvasScreen()
-    }
+//    NavigationView {
+      TabView {
+        NodesScreen()
+          .tabItem {
+            Image(systemName: "1.square.fill")
+            Text("Nodess")
+          }
+
+        CategoriesScreen()
+          .tabItem {
+            Image(systemName: "1.square.fill")
+            Text("Categories")
+          }
+      }
+//      CanvasScreen()
+//    }
     .environment(\.managedObjectContext, persistenceController.container.viewContext)
   }
 }

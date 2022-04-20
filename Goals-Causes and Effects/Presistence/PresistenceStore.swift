@@ -45,15 +45,31 @@ class PresistenceStoreImpl {
   }
 
   @discardableResult
-  func newNode(title: String, isGood: Bool, initialValue: Double) -> NodeData {
+  func newNode(
+    title: String,
+    isGood: Bool,
+    initialValue: Double,
+    category: CategoryData?
+  ) -> NodeData {
     let node = NodeData(context: container.viewContext)
     node.title = title
     node.color = isGood ? .green : .red
     node.initialValue = initialValue
+    node.category = category
 
     saveContext()
 
     return node
+  }
+
+  @discardableResult
+  func newCategory(title: String) -> CategoryData {
+    let category = CategoryData(context: container.viewContext)
+    category.title = title
+
+    saveContext()
+
+    return category
   }
 
   func saveContext () {

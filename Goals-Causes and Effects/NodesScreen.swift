@@ -12,7 +12,7 @@ struct NodesScreen: View {
   var nodes: FetchedResults<NodeData>
 
   var body: some View {
-    VStack {
+    NavigationView {
       List {
         ForEach(nodes, id: \.title) { node in
           NavigationLink {
@@ -62,16 +62,17 @@ struct NodesScreen: View {
           store.saveContext()
         }
       }
-    }
+      .navigationTitle("Nodes")
 
-    .toolbar {
-      ToolbarItemGroup(placement: .navigationBarTrailing) {
-        NavigationLink {
-          AddNodeScreen()
-        } label: {
-          Image(systemName: "plus")
+      .toolbar {
+        ToolbarItemGroup(placement: .navigationBarTrailing) {
+          NavigationLink {
+            AddNodeScreen()
+          } label: {
+            Image(systemName: "plus")
+          }
+          NavigationLink(destination: { CanvasScreen() }, label: { Text("Picture") })
         }
-        NavigationLink(destination: { CanvasScreen() }, label: { Text("Picture") })
       }
     }
   }

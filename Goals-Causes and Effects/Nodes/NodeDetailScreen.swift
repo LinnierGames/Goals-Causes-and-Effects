@@ -23,6 +23,13 @@ struct NodeDetailScreen: View {
 
   var body: some View {
     VStack {
+      if let title = node.category?.title {
+        HStack {
+          Text(title)
+          Spacer()
+        }
+      }
+
       let breadcrumbs = breadCrumbsOfNodes
         .map { String($0.title.first!) }
         .joined(separator: " -> ")

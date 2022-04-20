@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E1A5D5FF280FC6550093B3CE /* CategoriesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5D5FE280FC6550093B3CE /* CategoriesScreen.swift */; };
+		E1A5D601280FD0D30093B3CE /* Extensions+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5D600280FD0D30093B3CE /* Extensions+Alert.swift */; };
 		E1BE8DBE27F032C5009A0C6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8DBD27F032C5009A0C6D /* AppDelegate.swift */; };
 		E1BE8DC027F032C5009A0C6D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8DBF27F032C5009A0C6D /* SceneDelegate.swift */; };
 		E1BE8DC227F032C5009A0C6D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE8DC127F032C5009A0C6D /* ViewController.swift */; };
@@ -53,6 +55,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E1A5D5FE280FC6550093B3CE /* CategoriesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesScreen.swift; sourceTree = "<group>"; };
+		E1A5D600280FD0D30093B3CE /* Extensions+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+Alert.swift"; sourceTree = "<group>"; };
 		E1BE8DBA27F032C5009A0C6D /* Goals-Causes and Effects.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Goals-Causes and Effects.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1BE8DBD27F032C5009A0C6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E1BE8DBF27F032C5009A0C6D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -137,11 +141,14 @@
 				E1BE8DBD27F032C5009A0C6D /* AppDelegate.swift */,
 				E1BE8DBF27F032C5009A0C6D /* SceneDelegate.swift */,
 				E1BE8DC127F032C5009A0C6D /* ViewController.swift */,
+				E1BE8E0327F0486F009A0C6D /* NodesScreen.swift */,
+				E1A5D5FE280FC6550093B3CE /* CategoriesScreen.swift */,
 				E1BE8E0127F04858009A0C6D /* CanvasScreen.swift */,
 				E1C7C958280614F800C026F4 /* Nodes */,
 				E1C7C952280614C000C026F4 /* EffectionDetailScreen.swift */,
 				E1C7C96628061E8A00C026F4 /* NodeCircle.swift */,
 				E1C7C94E2806148800C026F4 /* Extensions.swift */,
+				E1A5D600280FD0D30093B3CE /* Extensions+Alert.swift */,
 				E1C7C9592806181F00C026F4 /* Presistence */,
 				E1BE8DC327F032C5009A0C6D /* Main.storyboard */,
 				E1BE8DC927F032C7009A0C6D /* Assets.xcassets */,
@@ -172,7 +179,6 @@
 		E1C7C958280614F800C026F4 /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
-				E1BE8E0327F0486F009A0C6D /* NodesScreen.swift */,
 				E1C7C956280614E800C026F4 /* AddNodeScreen.swift */,
 				E1C7C954280614D800C026F4 /* NodeSearchScreen.swift */,
 				E1C7C950280614A700C026F4 /* NodeDetailScreen.swift */,
@@ -329,6 +335,7 @@
 			files = (
 				E1BE8DC227F032C5009A0C6D /* ViewController.swift in Sources */,
 				E1C7C957280614E800C026F4 /* AddNodeScreen.swift in Sources */,
+				E1A5D601280FD0D30093B3CE /* Extensions+Alert.swift in Sources */,
 				E1C7C9642806184100C026F4 /* CategoryData+CoreDataClass.swift in Sources */,
 				E1C7C9612806184100C026F4 /* NodeData+CoreDataProperties.swift in Sources */,
 				E1C7C94F2806148800C026F4 /* Extensions.swift in Sources */,
@@ -344,6 +351,7 @@
 				E1BE8E0427F0486F009A0C6D /* NodesScreen.swift in Sources */,
 				E1C7C9652806184100C026F4 /* CategoryData+CoreDataProperties.swift in Sources */,
 				E1BE8E0227F04858009A0C6D /* CanvasScreen.swift in Sources */,
+				E1A5D5FF280FC6550093B3CE /* CategoriesScreen.swift in Sources */,
 				E1BE8DC827F032C5009A0C6D /* Goals_Causes_and_Effects.xcdatamodeld in Sources */,
 				E1C7C9602806184100C026F4 /* NodeData+CoreDataClass.swift in Sources */,
 				E1C7C96728061E8A00C026F4 /* NodeCircle.swift in Sources */,
