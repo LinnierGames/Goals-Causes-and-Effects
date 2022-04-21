@@ -57,7 +57,7 @@ class CanvasViewController: UIViewController {
     drawPie.isUserInteractionEnabled = false
     view.addSubview(drawPie)
 
-    spawnNodes()
+//    spawnNodes()
     spawnCategoriesAndNodes()
   }
 
@@ -90,13 +90,14 @@ class CanvasViewController: UIViewController {
     let pi = Double.pi
     let bounds = view.bounds
     let largestRadius = max(bounds.width, bounds.height) / 2
+    let center = CGPoint(x: bounds.width/2, y: bounds.height/2 - 96)
 
+    // Set up boundaries
     for (index, node) in nodes.enumerated() {
       let piePath = UIBezierPath()
       let startAngle = Double(index) / Double(nodes.count) * 2 * pi
       let endAngle = Double(index+1) / Double(nodes.count) * 2 * pi
       let thisRadius = largestRadius
-      let center = CGPoint(x: bounds.width/2, y: bounds.height/2 - 96)
       piePath.move(to: center)
 
       piePath.addArc(withCenter: center,
@@ -108,39 +109,39 @@ class CanvasViewController: UIViewController {
       piePath.close()
       collision.addBoundary(withIdentifier: String(index) as NSCopying, for: piePath)
     }
-  }
 
-  private func spawnNodes() {
-    let ctx = persistenceController.container.viewContext
-    let request = NodeData.fetchRequest()
-    nodesToCreate = try! ctx.fetch(request).shuffled()
-
-//    nodesToCreate = nodesToCreate + nodesToCreate + nodesToCreate
+    // Spawn Nodes
+    let points = pointsOnCircleFor(
+      numberOfPoints: nodes.count, centerX: center.x, centerY: center.y, radius: 400
+    )
+    let data = zip(nodes, points).map { n, p in
+      (category: n.category, nodes: n.nodes, spawnPoint: p)
+    }
 
     tableOfNodeViews.removeAll()
-    makeNextNode()
+
+    for section in data {
+      DispatchQueue.global().async {
+        for node in section.nodes {
+          DispatchQueue.main.async {
+            self.makeNode(node, at: section.spawnPoint)
+          }
+
+          sleep(1)
+        }
+      }
+    }
 
     animator.addBehavior(gravity)
     animator.addBehavior(collision)
     animator.addBehavior(preventRotation)
   }
 
-  private func makeNextNode() {
-    let spawnPoint = UIDevice.current.userInterfaceIdiom == .pad
-      ? CGPoint(x: 200, y: 0)
-      : CGPoint(x: view.frame.midX + .random(in: -200..<200), y: view.frame.minY)
-    let spawnDelay: TimeInterval = 1
-
-    guard !nodesToCreate.isEmpty else {
-      return
-    }
-
-    let node = nodesToCreate.removeLast()
-
+  private func makeNode(_ node: NodeData, at point: CGPoint) {
     let nodeView = NodeView(node: node)
     nodeView.translatesAutoresizingMaskIntoConstraints = false
     nodeView.frame.size = CGSize(width: sizeOfNodes, height: sizeOfNodes)
-    nodeView.frame.origin = spawnPoint
+    nodeView.frame.origin = point
     view.insertSubview(nodeView, belowSubview: drawEffectionsView)
 
     NSLayoutConstraint.activate([
@@ -156,10 +157,6 @@ class CanvasViewController: UIViewController {
     nodeView.addGestureRecognizer(didTapGesture)
 
     tableOfNodeViews[node.objectID] = nodeView
-
-    DispatchQueue.main.asyncAfter(deadline: .now() + spawnDelay) { [weak self] in
-      self?.makeNextNode()
-    }
   }
 
   @objc private func didTapNodeView(gesture: UITapGestureRecognizer) {
@@ -265,13 +262,19 @@ class DrawPie: UIView {
     let largestRadius = max(bounds.width, bounds.height) / 2
 
     let nodes = categories.map { (category: $0, nodes: $0.listOfNodes) }
+    let points = pointsOnCircleFor(
+      numberOfPoints: nodes.count, centerX: center.x, centerY: center.y - 96, radius: 150
+    )
+    let sections = zip(nodes, points).map { n, p in
+      (category: n.category, nodes: n.nodes, spawnPoint: p)
+    }
 
-    for (index, node) in nodes.enumerated() {
+    for (index, section) in sections.enumerated() {
       let piePath = UIBezierPath()
       let startAngle = Double(index) / Double(nodes.count) * 2 * pi
       let endAngle = Double(index+1) / Double(nodes.count) * 2 * pi
-      let thisRadius = largestRadius
       let center = CGPoint(x: bounds.width/2, y: bounds.height/2 - 96)
+      let thisRadius = largestRadius
       piePath.move(to: center)
 
       piePath.addArc(withCenter: center,
@@ -282,19 +285,57 @@ class DrawPie: UIView {
       piePath.addLine(to: center)
       piePath.close()
 
-      let shapeLayer = CAShapeLayer()
-      shapeLayer.path = piePath.cgPath
+      let boundaryLayer = CAShapeLayer()
+      boundaryLayer.path = piePath.cgPath
+      boundaryLayer.fillColor = UIColor.clear.cgColor
+      boundaryLayer.strokeColor = UIColor.red.cgColor
+      boundaryLayer.frame = layer.bounds
+      self.layer.addSublayer(boundaryLayer)
 
-      // apply other properties related to the path
-      shapeLayer.fillColor = UIColor.clear.cgColor
-      shapeLayer.strokeColor = UIColor.red.cgColor
-      shapeLayer.frame = layer.bounds
+      let spawnPointPath = UIBezierPath(
+        arcCenter: section.spawnPoint, radius: 5, startAngle: 0, endAngle: .pi * 2, clockwise: true
+      )
+      spawnPointPath.close()
 
-      // add the new layer to our custom view
-      self.layer.addSublayer(shapeLayer)
+      let spawnPointLayer = CAShapeLayer()
+      spawnPointLayer.path = spawnPointPath.cgPath
+      spawnPointLayer.fillColor = UIColor.red.cgColor
+      spawnPointLayer.frame = layer.bounds
+      self.layer.addSublayer(spawnPointLayer)
+
+      let textlayer = CATextLayer()
+      let title = section.category.title
+      let textWidth = title.size(withAttributes: [.font: UIFont.systemFont(ofSize: 12)])
+      textlayer.frame = CGRect(x: section.spawnPoint.x, y: section.spawnPoint.y, width: textWidth.width, height: 18)
+      textlayer.fontSize = 12
+      textlayer.alignmentMode = .center
+      textlayer.string = title
+      textlayer.isWrapped = true
+      textlayer.truncationMode = .end
+//      textlayer.backgroundColor = UIColor.white.cgColor
+      textlayer.foregroundColor = UIColor.black.cgColor
+
+      self.layer.addSublayer(textlayer)
     }
   }
 
+}
+
+public func pointsOnCircleFor(numberOfPoints: Int, centerX: CGFloat, centerY: CGFloat, radius: CGFloat, precision: UInt = 3) -> [CGPoint] {
+  var points = [CGPoint]()
+  let angle = CGFloat(M_PI) / CGFloat(numberOfPoints) * 2.0
+  let p = CGFloat(pow(10.0, Double(precision)))
+
+  for i in 0..<numberOfPoints {
+    let x = centerX - radius * cos(angle * CGFloat(i))
+    let roundedX = Double(round(p * x)) / Double(p)
+    let y = centerY - radius * sin(angle * CGFloat(i))
+    let roundedY = Double(round(p * y)) / Double(p)
+    points.append(CGPoint(x: roundedX, y: roundedY))
+  }
+
+  print(points)
+  return points
 }
 
 extension UIColor {
