@@ -22,3 +22,9 @@ extension NodeData {
     listOfEffects.map { $0.effected! }
   }
 }
+
+extension CategoryData {
+  var listOfNodes: [NodeData] {
+    self.nodes?.allObjects as? [NodeData] ?? []
+  }
+}

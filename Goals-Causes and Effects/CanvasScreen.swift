@@ -13,18 +13,7 @@ struct CanvasScreen: View {
   var nodes: FetchedResults<NodeData>
 
   var body: some View {
-    //    Canvas { context, size in
-    //      let n = nodes.count
-    //      context.stroke(
-    //          Path(ellipseIn: CGRect(origin: .zero, size: size)),
-    //          with: .color(.green),
-    //          lineWidth: 4)
-    //      context.draw(Text("Number of nodes: \(n)"), at: CGPoint(x: size.width / 2, y: size.height / 2))
-    //    }
-
-    //    GeometryReader { proxy in
     CanvasView()
-    //    }
   }
 }
 
@@ -37,126 +26,6 @@ struct CanvasView: UIViewControllerRepresentable {
   }
 }
 
-class Draw: UIView {
-  let path: UIBezierPath
-
-  init(path: UIBezierPath) {
-    self.path = path
-    super.init(frame: .zero)
-
-    // Create a CAShapeLayer
-    let shapeLayer = CAShapeLayer()
-
-    // The Bezier path that we made needs to be converted to
-    // a CGPath before it can be used on a layer.
-    shapeLayer.path = path.cgPath
-
-    // apply other properties related to the path
-    shapeLayer.strokeColor = UIColor.red.cgColor
-    shapeLayer.fillColor = UIColor.white.cgColor
-    shapeLayer.lineWidth = 1.0
-//    shapeLayer.position = CGPoint(x: 10, y: 10)
-
-    // add the new layer to our custom view
-    self.layer.addSublayer(shapeLayer)
-  }
-
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-
-}
-
-class DrawEffections: UIView {
-  var arrows = [Arrow]() {
-    didSet {
-      updateUI()
-    }
-  }
-
-  private func updateUI() {
-    layer.sublayers?.removeAll()
-
-    for arrow in arrows {
-      // Create a CAShapeLayer
-      let shapeLayer = CAShapeLayer()
-
-      // The Bezier path that we made needs to be converted to
-      // a CGPath before it can be used on a layer.
-      let scale: CGFloat = 10
-      let arrowPath = UIBezierPath.arrow(
-        from: arrow.a, to: arrow.b,
-        tailWidth: arrow.width * scale, headWidth: arrow.width * scale,
-        headLength: arrow.width * scale / 2
-      )
-      shapeLayer.path = arrowPath.cgPath
-
-      // apply other properties related to the path
-//      shapeLayer.strokeColor = UIColor.red.cgColor
-      shapeLayer.fillColor = arrow.color.cgColor
-//      shapeLayer.lineWidth = 1.0
-      shapeLayer.frame = layer.bounds
-
-      // add the new layer to our custom view
-      self.layer.addSublayer(shapeLayer)
-    }
-  }
-
-}
-
-extension UIBezierPath {
-
-  class func arrow(
-    from start: CGPoint,
-    to end: CGPoint,
-    tailWidth: CGFloat,
-    headWidth: CGFloat,
-    headLength: CGFloat
-  ) -> Self {
-    let nodeRadius = sizeOfNodes / 2 - 12
-
-    func offsetPoint(s: CGPoint, e: CGPoint, center: CGPoint) -> CGPoint {
-      let opposite = e.y - s.y
-      let adjacent = e.x - s.x
-      let referenceAngle = atan2(opposite, adjacent)
-
-      let x = center.x + cos(referenceAngle) * nodeRadius
-      let y = center.y + sin(referenceAngle) * nodeRadius
-
-      return CGPoint(x: x, y: y)
-    }
-
-    let offsettedStart = offsetPoint(s: start, e: end, center: start)
-    let offsetedEnd = offsetPoint(s: end, e: start, center: end)
-
-    print(start, offsettedStart, end, offsetedEnd)
-    let length = hypot(offsetedEnd.x - offsettedStart.x, offsetedEnd.y - offsettedStart.y)
-    let tailLength = length - headLength
-
-    func p(_ x: CGFloat, _ y: CGFloat) -> CGPoint { return CGPoint(x: x, y: y) }
-    let points: [CGPoint] = [
-      p(0, tailWidth / 2),
-      p(tailLength, tailWidth / 2),
-      p(tailLength, headWidth / 2),
-      p(length, 0),
-      p(tailLength, -headWidth / 2),
-      p(tailLength, -tailWidth / 2),
-      p(0, -tailWidth / 2)
-    ]
-
-    let cosine = (offsetedEnd.x - offsettedStart.x) / length
-    let sine = (offsetedEnd.y - offsettedStart.y) / length
-    let transform = CGAffineTransform(a: cosine, b: sine, c: -sine, d: cosine, tx: offsettedStart.x, ty: offsettedStart.y)
-
-    let path = CGMutablePath()
-    path.addLines(between: points, transform: transform)
-    path.closeSubpath()
-
-    return self.init(cgPath: path)
-  }
-
-}
-
 struct Arrow {
   let a: CGPoint
   let b: CGPoint
@@ -164,10 +33,13 @@ struct Arrow {
   let width: CGFloat
 }
 
-private let sizeOfNodes: CGFloat = 96
+let sizeOfNodes: CGFloat = 96
+
+import CoreData
 
 class CanvasViewController: UIViewController {
   private let drawEffectionsView = DrawEffections()
+  private let drawPie = DrawPie()
 
   private let persistenceController = injectPresistenceStore()
 
@@ -178,22 +50,15 @@ class CanvasViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-//    view.backgroundColor = .blue
-
-//    let path1 = UIBezierPath()
-//    path1.move(to: CGPoint(x: 0, y: 200))
-//    path1.addLine(to: CGPoint(x: view.frame.midX, y: 400))
-//    path1.addLine(to: CGPoint(x: view.frame.maxX, y: 200))
-//    path1.addLine(to: CGPoint(x: view.frame.midX, y: -300))
-//    let pathView = Draw(path: path1)
-//    pathView.frame = view.bounds
-//    view.addSubview(pathView)
-
     drawEffectionsView.frame = view.bounds
     drawEffectionsView.isUserInteractionEnabled = false
     view.addSubview(drawEffectionsView)
+    drawPie.frame = view.bounds
+    drawPie.isUserInteractionEnabled = false
+    view.addSubview(drawPie)
 
     spawnNodes()
+    spawnCategoriesAndNodes()
   }
 
   var nodesToCreate = [NodeData]()
@@ -213,23 +78,47 @@ class CanvasViewController: UIViewController {
     return behavior
   }()
 
+  private func spawnCategoriesAndNodes() {
+    let ctx = persistenceController.container.viewContext
+    let request = CategoryData.fetchRequest()
+    let categories = try! ctx.fetch(request).shuffled()
+
+    drawPie.categories = categories
+
+    let nodes = categories.map { (category: $0, nodes: $0.listOfNodes) }
+
+    let pi = Double.pi
+    let bounds = view.bounds
+    let largestRadius = max(bounds.width, bounds.height) / 2
+
+    for (index, node) in nodes.enumerated() {
+      let piePath = UIBezierPath()
+      let startAngle = Double(index) / Double(nodes.count) * 2 * pi
+      let endAngle = Double(index+1) / Double(nodes.count) * 2 * pi
+      let thisRadius = largestRadius
+      let center = CGPoint(x: bounds.width/2, y: bounds.height/2 - 96)
+      piePath.move(to: center)
+
+      piePath.addArc(withCenter: center,
+        radius: thisRadius,
+        startAngle: startAngle,
+        endAngle: endAngle,
+        clockwise: true)
+      piePath.addLine(to: center)
+      piePath.close()
+      collision.addBoundary(withIdentifier: String(index) as NSCopying, for: piePath)
+    }
+  }
+
   private func spawnNodes() {
     let ctx = persistenceController.container.viewContext
     let request = NodeData.fetchRequest()
     nodesToCreate = try! ctx.fetch(request).shuffled()
 
+//    nodesToCreate = nodesToCreate + nodesToCreate + nodesToCreate
+
     tableOfNodeViews.removeAll()
     makeNextNode()
-
-//    let path1 = UIBezierPath()
-//    path1.move(to: CGPoint(x: 0, y: 200))
-//    path1.addLine(to: CGPoint(x: view.frame.midX, y: 400))
-//    path1.addLine(to: CGPoint(x: view.frame.maxX, y: 200))
-//    path1.addLine(to: CGPoint(x: view.frame.midX, y: -300))
-
-//    if UIDevice.current.userInterfaceIdiom == .pad {
-//      collision.addBoundary(withIdentifier: "Cat 1" as NSCopying, for: path1)
-//    }
 
     animator.addBehavior(gravity)
     animator.addBehavior(collision)
@@ -325,6 +214,89 @@ struct HashablePair<Element: Hashable>: Hashable {
   }
 }
 
+class DrawEffections: UIView {
+  var arrows = [Arrow]() {
+    didSet {
+      updateUI()
+    }
+  }
+
+  private func updateUI() {
+    layer.sublayers?.removeAll()
+
+    for arrow in arrows {
+      // Create a CAShapeLayer
+      let shapeLayer = CAShapeLayer()
+
+      // The Bezier path that we made needs to be converted to
+      // a CGPath before it can be used on a layer.
+      let scale: CGFloat = 10
+      let arrowPath = UIBezierPath.arrow(
+        from: arrow.a, to: arrow.b,
+        tailWidth: arrow.width * scale, headWidth: arrow.width * scale,
+        headLength: arrow.width * scale / 2
+      )
+      shapeLayer.path = arrowPath.cgPath
+
+      // apply other properties related to the path
+//      shapeLayer.strokeColor = UIColor.red.cgColor
+      shapeLayer.fillColor = arrow.color.cgColor
+//      shapeLayer.lineWidth = 1.0
+      shapeLayer.frame = layer.bounds
+
+      // add the new layer to our custom view
+      self.layer.addSublayer(shapeLayer)
+    }
+  }
+
+}
+
+class DrawPie: UIView {
+  var categories = [CategoryData]() {
+    didSet {
+      updateUI()
+    }
+  }
+
+  private func updateUI() {
+    layer.sublayers?.removeAll()
+
+    let pi = Double.pi
+    let largestRadius = max(bounds.width, bounds.height) / 2
+
+    let nodes = categories.map { (category: $0, nodes: $0.listOfNodes) }
+
+    for (index, node) in nodes.enumerated() {
+      let piePath = UIBezierPath()
+      let startAngle = Double(index) / Double(nodes.count) * 2 * pi
+      let endAngle = Double(index+1) / Double(nodes.count) * 2 * pi
+      let thisRadius = largestRadius
+      let center = CGPoint(x: bounds.width/2, y: bounds.height/2 - 96)
+      piePath.move(to: center)
+
+      piePath.addArc(withCenter: center,
+        radius: thisRadius,
+        startAngle: startAngle,
+        endAngle: endAngle,
+        clockwise: true)
+      piePath.addLine(to: center)
+      piePath.close()
+
+      let shapeLayer = CAShapeLayer()
+      shapeLayer.path = piePath.cgPath
+
+      // apply other properties related to the path
+      shapeLayer.fillColor = UIColor.clear.cgColor
+      shapeLayer.strokeColor = UIColor.red.cgColor
+      shapeLayer.frame = layer.bounds
+
+      // add the new layer to our custom view
+      self.layer.addSublayer(shapeLayer)
+    }
+  }
+
+}
+
 extension UIColor {
   convenience init(effection: EffectionData) {
     if effection.effect >= 0 {
@@ -341,17 +313,15 @@ extension CGFloat {
   }
 }
 
-import CoreData
-
 class NodeView: UIView {
   let node: NodeData
 
   private lazy var titleLabel: UILabel = {
     let label = UILabel()
-    label.font = UIFont.preferredFont(forTextStyle: .title3)
+    label.font = .systemFont(ofSize: 12)
     label.textAlignment = .center
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.numberOfLines = 2
+    label.numberOfLines = 0
     return label
   }()
 
@@ -389,7 +359,7 @@ class NodeView: UIView {
       heightAnchor.constraint(equalTo: widthAnchor),
     ])
 
-    backgroundColor = .lightGray
+    backgroundColor = node.color.withAlphaComponent(0.25)
   }
 
   private func updateUI() {
