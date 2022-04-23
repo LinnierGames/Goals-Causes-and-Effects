@@ -5,6 +5,7 @@
 //  Created by Erick Sanchez on 3/27/22.
 //
 
+import Combine
 import UIKit
 import SwiftUI
 
@@ -51,15 +52,43 @@ class CanvasViewController: UIViewController {
     super.viewDidLoad()
 
     drawEffectionsView.frame = view.bounds
+//    drawEffectionsView.translatesAutoresizingMaskIntoConstraints = false
     drawEffectionsView.isUserInteractionEnabled = false
     view.addSubview(drawEffectionsView)
     drawPie.frame = view.bounds
+//    drawPie.translatesAutoresizingMaskIntoConstraints = false
     drawPie.isUserInteractionEnabled = false
     view.addSubview(drawPie)
 
-//    spawnNodes()
+//    NSLayoutConstraint.activate([
+//
+//      // Draw Pie
+//      drawPie.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//      drawPie.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//      drawPie.topAnchor.constraint(equalTo: view.topAnchor),
+//      drawPie.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+//
+//      // Effections
+//      drawEffectionsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//      drawEffectionsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//      drawEffectionsView.topAnchor.constraint(equalTo: view.topAnchor),
+//      drawEffectionsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+//    ])
+
     spawnCategoriesAndNodes()
   }
+
+//  override func viewDidLayoutSubviews() {
+//    super.viewDidLayoutSubviews()
+//
+//    spawnCategoriesAndNodes()
+//  }
+
+//  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//    super.traitCollectionDidChange(previousTraitCollection)
+//
+//    spawnCategoriesAndNodes()
+//  }
 
   var nodesToCreate = [NodeData]()
 
@@ -79,6 +108,12 @@ class CanvasViewController: UIViewController {
   }()
 
   private func spawnCategoriesAndNodes() {
+    collision.removeAllBoundaries()
+    tableOfNodeViews.removeAll()
+    for subview in view.subviews where subview is NodeView {
+      subview.removeFromSuperview()
+    }
+
     let ctx = persistenceController.container.viewContext
     let request = CategoryData.fetchRequest()
     let categories = try! ctx.fetch(request).shuffled()
@@ -117,8 +152,6 @@ class CanvasViewController: UIViewController {
     let data = zip(nodes, points).map { n, p in
       (category: n.category, nodes: n.nodes, spawnPoint: p)
     }
-
-    tableOfNodeViews.removeAll()
 
     for section in data {
       DispatchQueue.global().async {
@@ -233,6 +266,11 @@ class DrawEffections: UIView {
     }
   }
 
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    updateUI()
+  }
+
   private func updateUI() {
     layer.sublayers?.removeAll()
 
@@ -260,7 +298,6 @@ class DrawEffections: UIView {
       self.layer.addSublayer(shapeLayer)
     }
   }
-
 }
 
 class DrawPie: UIView {
@@ -268,6 +305,11 @@ class DrawPie: UIView {
     didSet {
       updateUI()
     }
+  }
+
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    updateUI()
   }
 
   private func updateUI() {
@@ -370,7 +412,7 @@ extension CGFloat {
 }
 
 class NodeView: UIView {
-  let node: NodeData
+  @ObservedObject var node: NodeData
 
   private lazy var titleLabel: UILabel = {
     let label = UILabel()
@@ -388,11 +430,20 @@ class NodeView: UIView {
     return view
   }()
 
+  private lazy var progressViewHeightConstraint =
+    progressView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: node.value)
+
+  private var bag = Set<AnyCancellable>()
+
   init(node: NodeData) {
     self.node = node
     super.init(frame: .zero)
     setupView()
     updateUI()
+
+    node.objectWillChange.sink { _ in
+      self.updateUI()
+    }.store(in: &bag)
   }
 
   required init?(coder: NSCoder) {
@@ -411,7 +462,6 @@ class NodeView: UIView {
     addSubview(titleLabel)
 
     let padding: CGFloat = 16
-//    let onHeight
 
     NSLayoutConstraint.activate([
 
@@ -424,7 +474,7 @@ class NodeView: UIView {
       // Progress View
       progressView.leadingAnchor.constraint(equalTo: leadingAnchor),
       progressView.trailingAnchor.constraint(equalTo: trailingAnchor),
-      progressView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: node.value),
+//      progressViewHeightConstraint,
       progressView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
       // Keep self as a square
@@ -438,5 +488,11 @@ class NodeView: UIView {
 
   private func updateUI() {
     titleLabel.text = node.title
+
+    progressViewHeightConstraint.isActive = false
+    progressView.removeConstraint(progressViewHeightConstraint)
+    progressViewHeightConstraint =
+      progressView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: node.value)
+    progressViewHeightConstraint.isActive = true
   }
 }
