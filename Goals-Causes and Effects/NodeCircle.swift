@@ -11,7 +11,20 @@ struct NodeCircle: View {
   @ObservedObject var node: NodeData
 
   var body: some View {
-    Circle()
-      .foregroundColor(Color(uiColor: node.color))
+    GeometryReader { proxy in
+      VStack(spacing: 0) {
+        let value = node.value
+        let offHeight = (1 - value) * proxy.size.height
+        let onHeight = value * proxy.size.height
+
+        Rectangle()
+          .frame(width: proxy.size.width, height: offHeight)
+          .foregroundColor(.clear)
+        Rectangle()
+          .frame(width: proxy.size.width, height: onHeight)
+          .foregroundColor(Color(uiColor: node.color))
+      }
+      .clipShape(Circle())
+    }
   }
 }

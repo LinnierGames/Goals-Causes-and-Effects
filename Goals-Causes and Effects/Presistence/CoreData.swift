@@ -21,6 +21,22 @@ extension NodeData {
   var listOfEffects2: [NodeData] {
     listOfEffects.map { $0.effected! }
   }
+
+  var value: Double {
+    if listOfCauses.isEmpty {
+      return initialValue
+    }
+
+    var total: Double = 1
+    var sum = initialValue
+
+    for causeEffect in listOfCauses {
+      sum += causeEffect.cause.value * causeEffect.effect
+      total += abs(1 * causeEffect.effect)
+    }
+
+    return max(sum / total, 0)
+  }
 }
 
 extension CategoryData {

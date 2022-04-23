@@ -48,6 +48,13 @@ struct AddNodeScreen: View {
       }
 
       HStack {
+        Text("Inital value")
+        Spacer()
+        Text(initalValue, format: .percent)
+      }
+      Slider(value: $initalValue, in: 0...1)
+
+      HStack {
         Text("Category")
         Spacer()
         Picker(selection: $category) {
@@ -74,6 +81,7 @@ struct AddNodeScreen: View {
 
       Spacer()
 
+//      NodeCircle(node: node)
       Circle()
         .foregroundColor(impact == .good ? .green : .red)
         .frame(width: 232, height: 232)
@@ -116,5 +124,17 @@ struct AddNodeScreen: View {
     }
 
     dismiss()
+  }
+}
+
+class EditNodeViewController: UIHostingController<AnyView> {
+  init(node: NodeData) {
+    let rootView = AddNodeScreen(editNode: node)
+      .environment(\.managedObjectContext, injectPresistenceStore().container.viewContext)
+    super.init(rootView: AnyView(rootView))
+  }
+
+  @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 }

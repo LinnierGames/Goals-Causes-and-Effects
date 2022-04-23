@@ -153,8 +153,11 @@ class CanvasViewController: UIViewController {
     preventRotation.addItem(nodeView)
 
     let didTapGesture =
-    UITapGestureRecognizer(target: self, action: #selector(didTapNodeView(gesture:)))
+      UITapGestureRecognizer(target: self, action: #selector(didTapNodeView(gesture:)))
     nodeView.addGestureRecognizer(didTapGesture)
+    let didLongTapGesture =
+      UILongPressGestureRecognizer(target: self, action: #selector(didLongTapNodeView(gesture:)))
+    nodeView.addGestureRecognizer(didLongTapGesture)
 
     tableOfNodeViews[node.objectID] = nodeView
   }
@@ -162,6 +165,11 @@ class CanvasViewController: UIViewController {
   @objc private func didTapNodeView(gesture: UITapGestureRecognizer) {
     guard let nodeView = gesture.view as? NodeView else { fatalError("not a node view") }
     drawEffections(for: nodeView)
+  }
+
+  @objc private func didLongTapNodeView(gesture: UITapGestureRecognizer) {
+    guard let nodeView = gesture.view as? NodeView else { fatalError("not a node view") }
+    editNode(nodeView)
   }
 
   func drawEffections(for nodeView: NodeView) {
@@ -198,6 +206,13 @@ class CanvasViewController: UIViewController {
     }
 
     drawEffectionsView.arrows = arrows
+  }
+
+  func editNode(_ nodeView: NodeView) {
+    let node = nodeView.node
+
+    let editNodeViewController = EditNodeViewController(node: node)
+    present(UINavigationController(rootViewController: editNodeViewController), animated: true)
   }
 }
 
@@ -313,7 +328,7 @@ class DrawPie: UIView {
       textlayer.isWrapped = true
       textlayer.truncationMode = .end
 //      textlayer.backgroundColor = UIColor.white.cgColor
-      textlayer.foregroundColor = UIColor.black.cgColor
+      textlayer.foregroundColor = UIColor.label.cgColor
 
       self.layer.addSublayer(textlayer)
     }
@@ -366,6 +381,13 @@ class NodeView: UIView {
     return label
   }()
 
+  private lazy var progressView: UIImageView = {
+    let view = UIImageView()
+    view.backgroundColor = node.color.withAlphaComponent(0.25)
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
+  }()
+
   init(node: NodeData) {
     self.node = node
     super.init(frame: .zero)
@@ -381,12 +403,15 @@ class NodeView: UIView {
     super.layoutSubviews()
 
     layer.cornerRadius = min(bounds.width / 2, bounds.height / 2)
+    clipsToBounds = true
   }
 
   private func setupView() {
+    addSubview(progressView)
     addSubview(titleLabel)
 
     let padding: CGFloat = 16
+//    let onHeight
 
     NSLayoutConstraint.activate([
 
@@ -396,11 +421,19 @@ class NodeView: UIView {
       trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: padding),
       bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding),
 
+      // Progress View
+      progressView.leadingAnchor.constraint(equalTo: leadingAnchor),
+      progressView.trailingAnchor.constraint(equalTo: trailingAnchor),
+      progressView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: node.value),
+      progressView.bottomAnchor.constraint(equalTo: bottomAnchor),
+
       // Keep self as a square
       heightAnchor.constraint(equalTo: widthAnchor),
     ])
 
-    backgroundColor = node.color.withAlphaComponent(0.25)
+//    backgroundColor = node.color.withAlphaComponent(0.25)
+    layer.borderColor = UIColor.black.cgColor
+    layer.borderWidth = 1
   }
 
   private func updateUI() {

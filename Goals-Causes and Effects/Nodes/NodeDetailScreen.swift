@@ -186,8 +186,8 @@ struct CauseRow<Destination: View>: View {
         HStack {
           VStack {
             Text(node.title)
-            Rectangle()
-              .foregroundColor(Color(uiColor: node.color))
+            ProgressView(value: node.value)
+              .tint(Color(uiColor: node.color))
           }
 
           Button {
@@ -251,8 +251,8 @@ struct EffectRow<Destination: View>: View {
 
           VStack {
             Text(node.title)
-            Rectangle()
-              .foregroundColor(Color(uiColor: node.color))
+            ProgressView(value: node.value)
+              .tint(Color(uiColor: node.color))
           }
         }
       }.swipeActions {
