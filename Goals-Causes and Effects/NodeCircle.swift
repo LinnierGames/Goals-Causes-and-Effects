@@ -9,20 +9,28 @@ import SwiftUI
 
 struct NodeCircle: View {
   @ObservedObject var node: NodeData
+  var showValue = false
 
   var body: some View {
     GeometryReader { proxy in
-      VStack(spacing: 0) {
+      ZStack {
         let value = node.value
-        let offHeight = (1 - value) * proxy.size.height
-        let onHeight = value * proxy.size.height
 
-        Rectangle()
-          .frame(width: proxy.size.width, height: offHeight)
-          .foregroundColor(.clear)
-        Rectangle()
-          .frame(width: proxy.size.width, height: onHeight)
-          .foregroundColor(Color(uiColor: node.color))
+        VStack(spacing: 0) {
+          let offHeight = (1 - value) * proxy.size.height
+          let onHeight = value * proxy.size.height
+
+          Rectangle()
+            .frame(width: proxy.size.width, height: offHeight)
+            .foregroundColor(.clear)
+          Rectangle()
+            .frame(width: proxy.size.width, height: onHeight)
+            .foregroundColor(Color(uiColor: node.color))
+        }
+
+        if showValue {
+          Text(value, format: .percent)
+        }
       }
       .clipShape(Circle())
     }

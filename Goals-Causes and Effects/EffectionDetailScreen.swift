@@ -16,7 +16,7 @@ struct EffectionDetailScreen: View {
     NavigationView {
       VStack {
         Text(effection.cause.title)
-        NodeCircle(node: effection.cause)
+        NodeCircle(node: effection.cause, showValue: true)
           .frame(width: 232, height: 232)
         Spacer()
         HStack {
@@ -89,7 +89,7 @@ struct EffectionDetailScreen: View {
           }
         }
         Spacer()
-        NodeCircle(node: effection.effected)
+        NodeCircle(node: effection.effected, showValue: true)
           .frame(width: 232, height: 232)
         Text(effection.effected.title)
       }

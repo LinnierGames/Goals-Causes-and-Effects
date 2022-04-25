@@ -31,6 +31,7 @@ extension NodeData {
   }
 
   @NSManaged public var title: String
+  @NSManaged public var notes: String
   @NSManaged public var category: CategoryData?
   @NSManaged public var causes: NSSet!
   @NSManaged public var effects: NSSet!

@@ -12,6 +12,7 @@
     <entity name="Node" representedClassName="NodeData" syncable="YES">
         <attribute name="colorValue" attributeType="String" defaultValueString="#FFFFFF"/>
         <attribute name="initialValue" attributeType="Double" defaultValueString="0.5" usesScalarValueType="YES"/>
+        <attribute name="notes" attributeType="String" defaultValueString=""/>
         <attribute name="shapeValue" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" attributeType="String" defaultValueString="Untitled"/>
         <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="nodes" inverseEntity="Category"/>
@@ -21,6 +22,6 @@
     <elements>
         <element name="Category" positionX="-62.734375" positionY="-70.484375" width="128" height="59"/>
         <element name="Effection" positionX="-69.053466796875" positionY="-172.9245300292969" width="128" height="74"/>
-        <element name="Node" positionX="148.6640625" positionY="-208.90234375" width="128" height="134"/>
+        <element name="Node" positionX="148.6640625" positionY="-208.90234375" width="128" height="149"/>
     </elements>
 </model>

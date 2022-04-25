@@ -35,11 +35,11 @@ struct NodeDetailScreen: View {
         .joined(separator: " -> ")
       Text(breadcrumbs)
 
-      NodeCircle(node: node)
-        .frame(height: 232)
+      NodeCircle(node: node, showValue: true)
+        .frame(height: 164)
 
       Image(systemName: "arrow.up")
-        .font(.system(size: 96, weight: .bold))
+        .font(.system(size: 64, weight: .bold))
         .rotationEffect(.degrees(segmentedControl == .causes ? 0 : 180))
         .animation(.spring(response: 0.2, dampingFraction: 0.3, blendDuration: 1), value: segmentedControl)
 
