@@ -70,3 +70,29 @@ extension String {
     self = String(effect) + "x"
   }
 }
+
+struct DismissKeyboard<Label: View>: View {
+  var label: Label
+
+  init(@ViewBuilder label: () -> Label) {
+    self.label = label()
+  }
+
+  init() where Label == Text {
+    self.label = Text("Dismiss")
+  }
+
+  var body: some View {
+    Button {
+      UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    } label: {
+      label
+    }
+  }
+}
+
+struct DismissKeyboard_Previews: PreviewProvider {
+  static var previews: some View {
+    DismissKeyboard()
+  }
+}

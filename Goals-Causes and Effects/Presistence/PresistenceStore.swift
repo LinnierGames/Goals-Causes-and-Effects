@@ -47,12 +47,14 @@ class PresistenceStoreImpl {
   @discardableResult
   func newNode(
     title: String,
+    notes: String,
     isGood: Bool,
     initialValue: Double,
     category: CategoryData?
   ) -> NodeData {
     let node = NodeData(context: container.viewContext)
     node.title = title
+    node.notes = notes
     node.color = isGood ? .green : .red
     node.initialValue = initialValue
     node.category = category

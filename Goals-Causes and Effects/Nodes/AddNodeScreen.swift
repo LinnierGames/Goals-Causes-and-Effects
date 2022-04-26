@@ -15,6 +15,7 @@ struct AddNodeScreen: View {
   private var categories: FetchedResults<CategoryData>
 
   @State private var title = ""
+  @State private var notes = ""
 
   private enum Impact: Int, Identifiable {
     case good, bad
@@ -34,6 +35,7 @@ struct AddNodeScreen: View {
     self.node = editNode
     self.didCreateNode = { _ in }
     self._title = State(initialValue: editNode.title)
+    self._notes = State(initialValue: editNode.notes)
     self._impact = State(initialValue: editNode.color == .green ? .good : .bad)
     self._initalValue = State(initialValue: editNode.initialValue)
     self._category = State(initialValue: editNode.category)
@@ -53,6 +55,16 @@ struct AddNodeScreen: View {
         Text(initalValue, format: .percent)
       }
       Slider(value: $initalValue, in: 0...1)
+
+      VStack {
+        HStack {
+          Text("Notes")
+          Spacer()
+          DismissKeyboard()
+        }
+        TextEditor(text: $notes)
+          .frame(height: 96)
+      }
 
       HStack {
         Text("Category")
@@ -84,7 +96,7 @@ struct AddNodeScreen: View {
 //      NodeCircle(node: node)
       Circle()
         .foregroundColor(impact == .good ? .green : .red)
-        .frame(width: 232, height: 232)
+        .frame(width: 132, height: 132)
     }
     .padding()
 
@@ -102,6 +114,8 @@ struct AddNodeScreen: View {
         }
       }
     }
+
+    .ignoresSafeArea(.keyboard)
   }
 
   private func pressSave() {
@@ -109,6 +123,7 @@ struct AddNodeScreen: View {
 
     if let node = node {
       node.title = title
+      node.notes = notes
       node.color = impact == .good ? .green : .red
       node.initialValue = initalValue
       node.category = category
@@ -116,6 +131,7 @@ struct AddNodeScreen: View {
     } else {
       let node = store.newNode(
         title: title,
+        notes: notes,
         isGood: impact == .good,
         initialValue: initalValue,
         category: category

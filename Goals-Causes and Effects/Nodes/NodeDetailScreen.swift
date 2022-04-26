@@ -23,7 +23,14 @@ struct NodeDetailScreen: View {
 
   var body: some View {
     VStack {
+      if !node.notes.isEmpty {
+        HStack {
+          Text(node.notes)
+          Spacer()
+        }
+      }
       if let title = node.category?.title {
+        Divider()
         HStack {
           Text(title)
           Spacer()
