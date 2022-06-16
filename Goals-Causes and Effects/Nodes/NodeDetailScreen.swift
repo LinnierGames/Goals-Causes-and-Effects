@@ -237,7 +237,7 @@ struct EffectRow<Destination: View>: View {
   var didTapEffection: (EffectionData) -> Void
 
   var body: some View {
-    if effect.isDeleted {
+    if effect.isDeleted || effect.effected == nil {
       EmptyView()
     } else {
       let node = effect.effected!
@@ -280,5 +280,17 @@ struct EffectRow<Destination: View>: View {
         }.tint(.yellow)
       }
     }
+  }
+}
+
+class DetailNodeViewController: UIHostingController<AnyView> {
+  init(node: NodeData) {
+    let rootView = NodeDetailScreen(node: node)
+      .environment(\.managedObjectContext, injectPresistenceStore().container.viewContext)
+    super.init(rootView: AnyView(rootView))
+  }
+
+  @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 }

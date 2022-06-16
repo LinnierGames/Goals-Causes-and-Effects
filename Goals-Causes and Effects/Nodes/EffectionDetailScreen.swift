@@ -149,3 +149,15 @@ extension View {
     return font(.system(size: size, weight: weight))
   }
 }
+
+class DetailEffectionViewController: UIHostingController<AnyView> {
+  init(effection: EffectionData) {
+    let rootView = EffectionDetailScreen(effection: effection)
+      .environment(\.managedObjectContext, injectPresistenceStore().container.viewContext)
+    super.init(rootView: AnyView(rootView))
+  }
+
+  @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+}

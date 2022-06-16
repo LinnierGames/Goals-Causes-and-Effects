@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E1462318285B818E0043B11F /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1462317285B818E0043B11F /* Models.swift */; };
+		E146231A285B81AE0043B11F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1462319285B81AE0043B11F /* Helpers.swift */; };
+		E146231C285B81C60043B11F /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = E146231B285B81C60043B11F /* Views.swift */; };
 		E1A5D5FF280FC6550093B3CE /* CategoriesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5D5FE280FC6550093B3CE /* CategoriesScreen.swift */; };
 		E1A5D601280FD0D30093B3CE /* Extensions+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5D600280FD0D30093B3CE /* Extensions+Alert.swift */; };
 		E1A5D60328110D540093B3CE /* Eh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5D60228110D540093B3CE /* Eh.swift */; };
@@ -58,6 +61,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E1462317285B818E0043B11F /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		E1462319285B81AE0043B11F /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		E146231B285B81C60043B11F /* Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		E1A5D5FE280FC6550093B3CE /* CategoriesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesScreen.swift; sourceTree = "<group>"; };
 		E1A5D600280FD0D30093B3CE /* Extensions+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+Alert.swift"; sourceTree = "<group>"; };
 		E1A5D60228110D540093B3CE /* Eh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Eh.swift; sourceTree = "<group>"; };
@@ -122,6 +128,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E1462316285B81830043B11F /* CanvasScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E1BE8E0127F04858009A0C6D /* CanvasScreen.swift */,
+				E1462317285B818E0043B11F /* Models.swift */,
+				E1462319285B81AE0043B11F /* Helpers.swift */,
+				E146231B285B81C60043B11F /* Views.swift */,
+			);
+			path = CanvasScreen;
+			sourceTree = "<group>";
+		};
 		E1BE8DB127F032C5009A0C6D = {
 			isa = PBXGroup;
 			children = (
@@ -150,10 +167,9 @@
 				E1BE8DBF27F032C5009A0C6D /* SceneDelegate.swift */,
 				E1BE8DC127F032C5009A0C6D /* ViewController.swift */,
 				E1BE8E0327F0486F009A0C6D /* NodesScreen.swift */,
-				E1A5D5FE280FC6550093B3CE /* CategoriesScreen.swift */,
-				E1BE8E0127F04858009A0C6D /* CanvasScreen.swift */,
 				E1C7C958280614F800C026F4 /* Nodes */,
-				E1C7C952280614C000C026F4 /* EffectionDetailScreen.swift */,
+				E1A5D5FE280FC6550093B3CE /* CategoriesScreen.swift */,
+				E1462316285B81830043B11F /* CanvasScreen */,
 				E1C7C96628061E8A00C026F4 /* NodeCircle.swift */,
 				E1C7C94E2806148800C026F4 /* Extensions.swift */,
 				E1A5D600280FD0D30093B3CE /* Extensions+Alert.swift */,
@@ -192,6 +208,7 @@
 				E1C7C956280614E800C026F4 /* AddNodeScreen.swift */,
 				E1C7C954280614D800C026F4 /* NodeSearchScreen.swift */,
 				E1C7C950280614A700C026F4 /* NodeDetailScreen.swift */,
+				E1C7C952280614C000C026F4 /* EffectionDetailScreen.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -359,6 +376,7 @@
 				E1C7C94F2806148800C026F4 /* Extensions.swift in Sources */,
 				E1BE8DBE27F032C5009A0C6D /* AppDelegate.swift in Sources */,
 				E1BE8DC027F032C5009A0C6D /* SceneDelegate.swift in Sources */,
+				E146231C285B81C60043B11F /* Views.swift in Sources */,
 				E1C7C951280614A700C026F4 /* NodeDetailScreen.swift in Sources */,
 				E1C7C9622806184100C026F4 /* EffectionData+CoreDataClass.swift in Sources */,
 				E1C7C9632806184100C026F4 /* EffectionData+CoreDataProperties.swift in Sources */,
@@ -374,7 +392,9 @@
 				E1A5D5FF280FC6550093B3CE /* CategoriesScreen.swift in Sources */,
 				E1BE8DC827F032C5009A0C6D /* Goals_Causes_and_Effects.xcdatamodeld in Sources */,
 				E1C7C9602806184100C026F4 /* NodeData+CoreDataClass.swift in Sources */,
+				E146231A285B81AE0043B11F /* Helpers.swift in Sources */,
 				E1C7C96728061E8A00C026F4 /* NodeCircle.swift in Sources */,
+				E1462318285B818E0043B11F /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
