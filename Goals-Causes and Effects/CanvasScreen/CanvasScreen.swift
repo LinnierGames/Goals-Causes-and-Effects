@@ -177,7 +177,8 @@ class CanvasViewController: UIViewController {
     animator.addBehavior(preventRotation)
   }
 
-  private func makeNode(_ node: NodeData, at point: CGPoint) {
+  @discardableResult
+  private func makeNode(_ node: NodeData, at point: CGPoint) -> NodeView {
     let nodeView = NodeView(node: node)
     nodeView.translatesAutoresizingMaskIntoConstraints = false
     nodeView.frame.size = CGSize(width: sizeOfNodes, height: sizeOfNodes)
@@ -207,6 +208,8 @@ class CanvasViewController: UIViewController {
     nodeView.addGestureRecognizer(didPanGesture)
 
     tableOfNodeViews[node.objectID] = nodeView
+
+    return nodeView
   }
 
   @objc private func didTapNodeView(gesture: UITapGestureRecognizer) {
@@ -241,17 +244,41 @@ class CanvasViewController: UIViewController {
     case .changed:
       drawConnectionView.setLine(to: point)
     case .ended:
-      if
-        let viewUnderPoint = view.hitTest(point, with: nil),
-        let terminalNodeView = viewUnderPoint as? NodeView
-      {
-        createEffection(between: sourceNideView, and: terminalNodeView)
+      if let viewUnderPoint = view.hitTest(point, with: nil) {
+        if let terminalNodeView = viewUnderPoint as? NodeView {
+          createEffection(between: sourceNideView, and: terminalNodeView)
+        } else {
+          createNode(connectedTo: sourceNideView, at: point)
+        }
       }
 
       drawConnectionView.removeAllPoints()
     default:
       break
     }
+  }
+
+  private func createNode(connectedTo sourceNideView: NodeView, at point: CGPoint) {
+    let store = injectPresistenceStore()
+    let newNode = store.newNode(
+      title: "",
+      notes: "",
+      isGood: true,
+      initialValue: 0.5,
+      category: nil
+    )
+
+    let effection = EffectionData(context: store.container.viewContext)
+    effection.effect = 1
+
+    sourceNideView.node.addToEffects(effection)
+    newNode.addToCauses(effection)
+
+    store.saveContext()
+
+    let newNodeView = makeNode(newNode, at: point)
+    editNode(newNodeView)
+//    drawEffections(for: sourceNideView)
   }
 
   private func createEffection(between sourceNideView: NodeView, and terminalNodeView: NodeView) {
