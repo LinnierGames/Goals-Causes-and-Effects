@@ -24,14 +24,16 @@ struct AddNodeScreen: View {
   @State private var category: CategoryData?
   @State private var initalValue: Double = 0.5
 
-  @Environment(\.dismiss) var dismiss
+  @Environment(\.dismiss) var dismissEnvironment
+  var dismiss: () -> Void
 
-  init(didCreateNode: @escaping (NodeData) -> Void = { _ in }) {
+  init(didCreateNode: @escaping (NodeData) -> Void = { _ in }, dismiss: (() -> Void)? = nil) {
     self.node = nil
     self.didCreateNode = didCreateNode
+    self.dismiss = dismiss ?? {}
   }
 
-  init(editNode: NodeData) {
+  init(editNode: NodeData, dismiss: (() -> Void)? = nil) {
     self.node = editNode
     self.didCreateNode = { _ in }
     self._title = State(initialValue: editNode.title)
@@ -39,6 +41,7 @@ struct AddNodeScreen: View {
     self._impact = State(initialValue: editNode.color == .green ? .good : .bad)
     self._initalValue = State(initialValue: editNode.initialValue)
     self._category = State(initialValue: editNode.category)
+    self.dismiss = dismiss ?? {}
   }
 
   var body: some View {
@@ -104,7 +107,10 @@ struct AddNodeScreen: View {
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
       ToolbarItem(placement: .navigationBarLeading) {
-        Button(action: dismiss.callAsFunction) {
+        Button {
+          dismiss()
+          dismissEnvironment()
+        } label: {
           Image(systemName: "xmark")
         }
       }
@@ -140,14 +146,21 @@ struct AddNodeScreen: View {
     }
 
     dismiss()
+    dismissEnvironment()
   }
 }
 
 class EditNodeViewController: UIHostingController<AnyView> {
   init(node: NodeData) {
-    let rootView = AddNodeScreen(editNode: node)
+    var vc: UIViewController! = nil
+    let dismiss = {
+      vc.dismiss(animated: true)
+    }
+
+    let rootView = AddNodeScreen(editNode: node, dismiss: dismiss)
       .environment(\.managedObjectContext, injectPresistenceStore().container.viewContext)
     super.init(rootView: AnyView(rootView))
+    vc = self
   }
 
   @MainActor required dynamic init?(coder aDecoder: NSCoder) {

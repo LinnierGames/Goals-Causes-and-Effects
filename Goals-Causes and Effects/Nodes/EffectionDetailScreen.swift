@@ -9,8 +9,9 @@ import SwiftUI
 
 struct EffectionDetailScreen: View {
   @ObservedObject var effection: EffectionData
+  var dismiss: () -> Void = {}
 
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.dismiss) private var dismissEnvironment
 
   var body: some View {
     NavigationView {
@@ -101,6 +102,7 @@ struct EffectionDetailScreen: View {
           Button {
             injectPresistenceStore().saveContext()
             dismiss()
+            dismissEnvironment()
           } label: {
             Image(systemName: "checkmark")
           }
@@ -152,9 +154,15 @@ extension View {
 
 class DetailEffectionViewController: UIHostingController<AnyView> {
   init(effection: EffectionData) {
-    let rootView = EffectionDetailScreen(effection: effection)
+    var vc: UIViewController! = nil
+    let dismiss = {
+      vc.dismiss(animated: true)
+    }
+
+    let rootView = EffectionDetailScreen(effection: effection, dismiss: dismiss)
       .environment(\.managedObjectContext, injectPresistenceStore().container.viewContext)
     super.init(rootView: AnyView(rootView))
+    vc = self
   }
 
   @MainActor required dynamic init?(coder aDecoder: NSCoder) {

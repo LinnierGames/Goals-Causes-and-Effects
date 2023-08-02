@@ -42,7 +42,7 @@ class LineHolderView: UIView {
   }
 
   func removeAllPoints() {
-//    saveBufferImage()
+    //    saveBufferImage()
     bezierPathLine.removeAllPoints()
     currentPoint = nil
     setNeedsDisplay()
@@ -277,16 +277,29 @@ class NodeView: UIView {
   progressView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: node.value)
 
   private var bag = Set<AnyCancellable>()
+  private var shapeLayer = CAShapeLayer()
 
   init(node: NodeData) {
     self.node = node
     super.init(frame: .zero)
+
     setupView()
     updateUI()
 
     node.objectWillChange.sink { _ in
       self.updateUI()
     }.store(in: &bag)
+
+    node.listOfEffects.forEach {
+      $0.objectWillChange.sink { _ in
+        self.updateUI()
+      }.store(in: &bag)
+    }
+    node.listOfCauses.forEach {
+      $0.objectWillChange.sink { _ in
+        self.updateUI()
+      }.store(in: &bag)
+    }
   }
 
   required init?(coder: NSCoder) {
@@ -297,6 +310,7 @@ class NodeView: UIView {
     super.layoutSubviews()
 
     layer.cornerRadius = min(bounds.width / 2, bounds.height / 2)
+    shapeLayer.frame = bounds
     clipsToBounds = true
   }
 
@@ -327,6 +341,18 @@ class NodeView: UIView {
     //    backgroundColor = node.color.withAlphaComponent(0.25)
     layer.borderColor = UIColor.black.cgColor
     layer.borderWidth = 1
+
+    let starPath = UIBezierPath()
+    starPath.addStar(rect: bounds, extrusion: 20, points: 5)
+
+    let boundaryLayer = CAShapeLayer()
+    boundaryLayer.path = starPath.cgPath
+    boundaryLayer.fillColor = UIColor.clear.cgColor
+    boundaryLayer.strokeColor = UIColor.red.cgColor
+    boundaryLayer.frame = layer.bounds
+    layer.addSublayer(boundaryLayer)
+
+//    layer.addSublayer(shapeLayer)
   }
 
   private func updateUI() {
@@ -339,3 +365,33 @@ class NodeView: UIView {
     progressViewHeightConstraint.isActive = true
   }
 }
+
+extension CGPoint {
+  func pointFrom(angle: CGFloat, radius: CGFloat) -> CGPoint {
+    return CGPoint(x: self.x + radius * cos(CGFloat.pi - angle), y: self.y - radius * sin(CGFloat.pi - angle))
+  }
+}
+
+extension UIBezierPath {
+  func addStar(rect: CGRect, extrusion: CGFloat, points: Int) {
+    self.move(to: CGPoint(x: 0, y: 0))
+    let center = CGPoint(x: rect.width / 2.0, y: rect.height / 2.0)
+    var angle:CGFloat = -CGFloat.pi / 2.0
+    let angleIncrement = CGFloat.pi * 2.0 / CGFloat(points)
+    let radius = rect.width / 2.0
+    var firstPoint = true
+    for _ in 1...points {
+      let point = center.pointFrom(angle: angle, radius: radius)
+      let nextPoint = center.pointFrom(angle: angle + angleIncrement, radius: radius)
+      let midPoint = center.pointFrom(angle: angle + angleIncrement / 2.0, radius: extrusion)
+      if firstPoint {
+        firstPoint = false
+        self.move(to: point)
+      }
+      self.addLine(to: midPoint)
+      self.addLine(to: nextPoint)
+      angle += angleIncrement
+    }
+  }
+}
+

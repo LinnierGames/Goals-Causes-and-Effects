@@ -10,6 +10,7 @@ import SwiftUI
 struct NodeDetailScreen: View {
   @ObservedObject var node: NodeData
   var breadCrumbsOfNodes = [NodeData]()
+  var dismiss: () -> Void = {}
 
   private enum SegmentedControl: Int, Identifiable {
     case causes, effects, initiatives
@@ -85,7 +86,8 @@ struct NodeDetailScreen: View {
           ForEach(node.listOfCauses) { cause in
             CauseRow(cause: cause) {
               NodeDetailScreen(
-                node: cause.cause, breadCrumbsOfNodes: breadCrumbsOfNodes + [self.node]
+                node: cause.cause, breadCrumbsOfNodes: breadCrumbsOfNodes + [self.node],
+                dismiss: dismiss
               )
             } didTapEffection: { effection in
               presentEffection = effection
@@ -95,7 +97,8 @@ struct NodeDetailScreen: View {
           ForEach(node.listOfEffects) { effect in
             EffectRow(effect: effect) {
               NodeDetailScreen(
-                node: effect.effected, breadCrumbsOfNodes: breadCrumbsOfNodes + [self.node]
+                node: effect.effected, breadCrumbsOfNodes: breadCrumbsOfNodes + [self.node],
+                dismiss: dismiss
               )
             } didTapEffection: { effection in
               presentEffection = effection
@@ -110,8 +113,15 @@ struct NodeDetailScreen: View {
 
     .navigationTitle(node.title)
     .toolbar {
-      Button("Edit") {
-        isShowingEdit = true
+      ToolbarItemGroup(placement: .navigationBarLeading) {
+        Button("Done") {
+          dismiss()
+        }
+      }
+      ToolbarItemGroup(placement: .navigationBarTrailing) {
+        Button("Edit") {
+          isShowingEdit = true
+        }
       }
     }
 
@@ -285,9 +295,15 @@ struct EffectRow<Destination: View>: View {
 
 class DetailNodeViewController: UIHostingController<AnyView> {
   init(node: NodeData) {
-    let rootView = NodeDetailScreen(node: node)
+    var vc: UIViewController! = nil
+    let dismiss = {
+      vc.dismiss(animated: true)
+    }
+
+    let rootView = NodeDetailScreen(node: node, dismiss: dismiss)
       .environment(\.managedObjectContext, injectPresistenceStore().container.viewContext)
     super.init(rootView: AnyView(rootView))
+    vc = self
   }
 
   @MainActor required dynamic init?(coder aDecoder: NSCoder) {

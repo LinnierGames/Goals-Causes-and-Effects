@@ -38,6 +38,8 @@ class PresistenceStoreImpl {
         fatalError("Unresolved error \(error), \(error.userInfo)")
       }
     })
+    container.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
+    
     return container
   }()
 

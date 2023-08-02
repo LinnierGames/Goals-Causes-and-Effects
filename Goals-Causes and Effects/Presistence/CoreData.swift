@@ -23,6 +23,8 @@ extension NodeData {
   }
 
   var value: Double {
+    // TODO: Prevent cycles
+    
     if listOfCauses.isEmpty {
       return initialValue
     }

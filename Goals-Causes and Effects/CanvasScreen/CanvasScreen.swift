@@ -109,7 +109,7 @@ class CanvasViewController: UIViewController {
   lazy var gravity: UIFieldBehavior = {
     let behavior = UIFieldBehavior.radialGravityField(position: view.center)
     behavior.minimumRadius = 900
-    behavior.strength = 250
+    behavior.strength = 2500
     return behavior
   }()
 
@@ -154,7 +154,7 @@ class CanvasViewController: UIViewController {
 
     // Spawn Nodes
     let points = pointsOnCircleFor(
-      numberOfPoints: nodes.count, centerX: center.x, centerY: center.y, radius: center.x
+      numberOfPoints: nodes.count, centerX: center.x, centerY: center.y, radius: center.x / 4
     )
     let data = zip(nodes, points).map { n, p in
       (category: n.category, nodes: n.nodes, spawnPoint: p)
